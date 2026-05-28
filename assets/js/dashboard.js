@@ -40,10 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ---------- 3) LOGOUT button ---------------------------------------------
+  // Goes through MGBAuth.logout() so the Worker's /logout endpoint runs
+  // (placeholder for future cookie clearing) AND the in-memory token is
+  // wiped. The redirect to login.html happens inside MGBAuth.logout().
   document.getElementById('logout-btn')?.addEventListener('click', () => {
-    window.MGBAuth.clearSession();
     window.toast('Logged out. See you soon!', '');
-    setTimeout(() => (window.location.href = 'index.html'), 600);
+    setTimeout(() => window.MGBAuth.logout(), 600);
   });
 
   // ---------- 4) CHARTS (Chart.js) -----------------------------------------

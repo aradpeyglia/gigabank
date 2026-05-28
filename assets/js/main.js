@@ -85,12 +85,12 @@ function initAuthNav() {
   // Re-append the hamburger toggle if it existed before we wiped innerHTML
   if (toggle) navCta.appendChild(toggle);
 
-  // Wire up the sign-out: clear session, toast, then reload so all nav state
-  // (here AND on hidden subpages already-rendered links) refreshes cleanly.
+  // Sign-out goes through MGBAuth.logout() which also hits the Worker's
+  // /logout endpoint (so Glia sees the visitor as un-identified). The
+  // toast fires first so the user gets feedback before the redirect.
   navCta.querySelector('#nav-signout')?.addEventListener('click', () => {
-    window.MGBAuth.clearSession();
     window.toast(`Signed out. See you soon, ${firstName}!`, '');
-    setTimeout(() => window.location.reload(), 700);
+    setTimeout(() => window.MGBAuth.logout(), 700);
   });
 }
 

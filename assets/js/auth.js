@@ -1,34 +1,45 @@
 /* =========================================================================
    AHOURA'S MEGAGANKYBANK — auth.js
    -------------------------------------------------------------------------
-   This file handles three things:
-     1) Configuration of the Google Apps Script URL used as our "backend"
-     2) The login form submission flow (POST to Apps Script, then redirect)
-     3) Session helpers used by dashboard.js + nav (logged-in/logout)
+   This file handles four things:
+     1) Configuration of the Cloudflare Worker URL ("gigabank-api")
+     2) Login / signup form submission (POST JSON to the Worker)
+     3) Session helpers used by dashboard.js + nav
+     4) ID-token lifecycle: storage, automatic refresh, logout
 
-   IMPORTANT — How the Google Sheet login works:
-     • A Google Apps Script Web App reads a Google Sheet of users.
-     • We send {action: 'login', email, password} as a POST request.
-     • The Apps Script returns JSON like
-         { ok: true, user: { name, email, accountId, balance } }
-       or { ok: false, error: 'Invalid credentials' }.
-     • On success we stash the user in localStorage and redirect to the
-       dashboard. The dashboard reads localStorage to greet them.
+   How auth works now (post-Direct-ID rewrite):
 
-   The README has step-by-step instructions for the Sheet + Apps Script.
+       browser ── POST /login {email,password} ──▶ Worker
+                                                    │
+                                                    ├─ verify in Sheet
+                                                    ├─ mint ES256 JWT
+                                                    ▼
+       browser ◀── {user, idToken, expiresAt} ────  Worker
+
+     • `user` is stashed in localStorage so the nav stays personalized.
+     • `idToken` + `expiresAt` are stashed in localStorage too so a quick
+       page navigation (login → dashboard) doesn't lose them. The TTL is
+       only ~5 minutes anyway, so the blast radius if it ever leaks is
+       tiny — and the next refresh tick can detect a stolen token because
+       the legitimate session would also keep refreshing.
+     • A timer is scheduled to call /refresh ~60s before expiry; if the
+       refresh fails we force-logout the user.
+
+   The README has step-by-step instructions for the Worker deploy + Sheet
+   + Apps Script.
    ========================================================================= */
 
 
 /* =========================================================================
-   CONFIG — paste your deployed Google Apps Script Web App URL here.
-   It will look like:
-   https://script.google.com/macros/s/AKfycby.................../exec
+   CONFIG — the deployed Worker URL. Empty string falls back to demo mode.
    ========================================================================= */
-const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbxPyfej86SXABravRee4_qiPdTVYGSTi2OfGID_xKptiNTHadylIfgHSxvVThKi0CNmOw/exec';
+const WORKER_API_URL = 'https://gigabank-api.ahoura-radpey.workers.dev';
 
-/* If SHEETS_API_URL is left unset we fall back to a built-in DEMO mode so
-   the site still "works" on GitHub Pages without any backend. The demo
-   credentials below are used in that case.                                  */
+/* If WORKER_API_URL is left empty we fall back to a built-in DEMO mode so
+   the site still "works" without any backend. The demo credentials below
+   are used in that case. Demo mode does NOT issue real JWTs, which means
+   Glia won't see the visitor as identified — that's expected, demo is
+   purely for visual / UX testing of the rest of the site.                 */
 const DEMO_USERS = [
   {
     email: 'demo@megagankybank.com',
@@ -50,9 +61,11 @@ const DEMO_USERS = [
 /* =========================================================================
    SESSION HELPERS — small wrappers around localStorage
    We use localStorage (NOT cookies) because GitHub Pages is static and we
-   don't have server-side sessions. This is fine for a personal demo.
+   don't have server-side sessions. The Worker is stateless; localStorage
+   carries everything the next page needs.
    ========================================================================= */
-const SESSION_KEY = 'mgb_session';
+const SESSION_KEY = 'mgb_session';   // user profile (name, email, etc.)
+const TOKEN_KEY   = 'mgb_id_token';  // { idToken, expiresAt } JSON
 
 function saveSession(user) {
   localStorage.setItem(SESSION_KEY, JSON.stringify(user));
@@ -68,42 +81,145 @@ function getSession() {
 
 function clearSession() {
   localStorage.removeItem(SESSION_KEY);
+  // Wiping the session always wipes the token too — they're co-issued.
+  clearIdToken();
 }
-
-// Expose so dashboard.js can use them
-window.MGBAuth = { getSession, clearSession, saveSession };
 
 
 /* =========================================================================
-   isBackendConfigured — true once the user has pasted a real Apps Script
-   URL into SHEETS_API_URL. We use it in a few places to decide whether to
-   hit the network or fall back to local demo mode.
+   ID-TOKEN HELPERS — store, fetch, expire
+   Stored as JSON in its own key so we can update it independently of the
+   user profile (e.g. on /refresh).
    ========================================================================= */
-function isBackendConfigured() {
-  return SHEETS_API_URL && !SHEETS_API_URL.startsWith('PASTE_');
+function saveIdToken(idToken, expiresAt) {
+  localStorage.setItem(TOKEN_KEY, JSON.stringify({ idToken, expiresAt }));
+  scheduleRefresh(expiresAt);
+}
+
+function readStoredToken() {
+  try {
+    return JSON.parse(localStorage.getItem(TOKEN_KEY));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Return the current ID token IF it's still valid (with a small safety
+ * margin so we don't hand Glia a token that's about to expire mid-flight).
+ * Returns null otherwise — caller can treat that as "anonymous".
+ */
+function getIdToken() {
+  const stored = readStoredToken();
+  if (!stored) return null;
+  const nowSec = Math.floor(Date.now() / 1000);
+  // 10s safety buffer
+  if (stored.expiresAt && stored.expiresAt - 10 < nowSec) return null;
+  return stored.idToken;
+}
+
+function clearIdToken() {
+  localStorage.removeItem(TOKEN_KEY);
+  cancelRefresh();
 }
 
 
 /* =========================================================================
-   LOGIN — talk to the Apps Script (or fall back to demo)
+   REFRESH LOOP — keep the token alive while the user is active
+   We use a single window-scoped setTimeout handle so re-scheduling is
+   trivial. Refresh fires at (expiresAt - 60s) so we always have plenty
+   of margin even if the request itself takes a couple of seconds.
+   ========================================================================= */
+let refreshTimerId = null;
+
+function cancelRefresh() {
+  if (refreshTimerId !== null) {
+    clearTimeout(refreshTimerId);
+    refreshTimerId = null;
+  }
+}
+
+function scheduleRefresh(expiresAt) {
+  cancelRefresh();
+  const nowSec = Math.floor(Date.now() / 1000);
+  const secondsUntilRefresh = Math.max(5, expiresAt - nowSec - 60);
+  refreshTimerId = setTimeout(refreshIdToken, secondsUntilRefresh * 1000);
+}
+
+async function refreshIdToken() {
+  if (!isWorkerConfigured()) return;
+  const stored = readStoredToken();
+  if (!stored?.idToken) return;
+
+  try {
+    const res = await fetch(WORKER_API_URL + '/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: stored.idToken }),
+    });
+    const data = await res.json();
+    if (res.ok && data.ok && data.idToken) {
+      saveIdToken(data.idToken, data.expiresAt);
+    } else {
+      // The Worker rejected the refresh (likely expired). Force re-login.
+      forceLogout('Your session has expired. Please sign in again.');
+    }
+  } catch (err) {
+    // Network blip — try once more in a bit instead of nuking the session.
+    console.warn('Refresh failed transiently, will retry:', err);
+    refreshTimerId = setTimeout(refreshIdToken, 30_000);
+  }
+}
+
+function forceLogout(message) {
+  clearSession();
+  if (message && typeof window.toast === 'function') {
+    window.toast(message, 'error');
+  }
+  // Only kick to login if we're not already there
+  if (!/login\.html$/i.test(window.location.pathname)) {
+    setTimeout(() => { window.location.href = 'login.html'; }, 600);
+  }
+}
+
+
+/* =========================================================================
+   isWorkerConfigured — true once WORKER_API_URL points at a real Worker.
+   ========================================================================= */
+function isWorkerConfigured() {
+  return WORKER_API_URL && /^https:\/\/.+\.workers\.dev/i.test(WORKER_API_URL);
+}
+
+
+/* =========================================================================
+   PUBLIC SURFACE — exposed so dashboard.js, main.js, and Glia integration
+   can use them without reaching into module internals.
+   ========================================================================= */
+window.MGBAuth = {
+  getSession,
+  saveSession,
+  clearSession,
+  getIdToken,
+  refreshIdToken,
+  logout: () => logout(),
+};
+
+
+/* =========================================================================
+   LOGIN — talk to the Worker (or fall back to demo)
    ========================================================================= */
 async function login(email, password) {
-  if (!isBackendConfigured()) {
+  if (!isWorkerConfigured()) {
     return demoLogin(email, password);
   }
 
   try {
-    // Important: Google Apps Script Web Apps require a POST without custom
-    // headers for the fetch to avoid a CORS preflight. We send form-encoded
-    // data because Apps Script reads it cleanly from e.parameter.
-    const formBody = new URLSearchParams();
-    formBody.append('action', 'login');
-    formBody.append('email', email);
-    formBody.append('password', password);
-
-    const res = await fetch(SHEETS_API_URL, {
+    // The Worker accepts JSON. Browsers send a CORS preflight for JSON
+    // bodies; the Worker handles OPTIONS and the matching CORS headers.
+    const res = await fetch(WORKER_API_URL + '/login', {
       method: 'POST',
-      body: formBody,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
@@ -124,7 +240,7 @@ function demoLogin(email, password) {
       if (user) {
         // Strip the password before storing in session — never persist it
         const { password: _pw, ...safe } = user;
-        resolve({ ok: true, user: safe });
+        resolve({ ok: true, user: safe });   // no idToken in demo mode
       } else {
         resolve({ ok: false, error: 'Invalid email or password.' });
       }
@@ -134,26 +250,18 @@ function demoLogin(email, password) {
 
 
 /* =========================================================================
-   SIGNUP — create a new account. Calls the Apps Script's `signup` action
-   which appends a row to the Users sheet and returns the new user record.
-   In demo mode it just pushes to the in-memory DEMO_USERS array (which
-   resets on page reload — but it's enough to verify the UX).
+   SIGNUP — POST {name,email,password} to the Worker's /signup
    ========================================================================= */
 async function signup(name, email, password) {
-  if (!isBackendConfigured()) {
+  if (!isWorkerConfigured()) {
     return demoSignup(name, email, password);
   }
 
   try {
-    const formBody = new URLSearchParams();
-    formBody.append('action', 'signup');
-    formBody.append('name', name);
-    formBody.append('email', email);
-    formBody.append('password', password);
-
-    const res = await fetch(SHEETS_API_URL, {
+    const res = await fetch(WORKER_API_URL + '/signup', {
       method: 'POST',
-      body: formBody,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
     });
 
     const data = await res.json();
@@ -182,6 +290,24 @@ function demoSignup(name, email, password) {
       resolve({ ok: true, user: newUser });
     }, 700);
   });
+}
+
+
+/* =========================================================================
+   LOGOUT — best-effort hit to /logout (it's a no-op server-side today,
+   but we keep the call so future cookie clearing has somewhere to live)
+   then wipe local state and bounce to the login page.
+   ========================================================================= */
+async function logout() {
+  if (isWorkerConfigured()) {
+    try {
+      await fetch(WORKER_API_URL + '/logout', { method: 'POST' });
+    } catch {
+      // Ignore — we still want to log out locally regardless
+    }
+  }
+  clearSession();
+  window.location.href = 'login.html';
 }
 
 
@@ -221,6 +347,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (result.ok) {
       saveSession(result.user);
+      // Store the freshly minted JWT so Glia can pick it up via
+      // getGliaContext() on the next page. Demo mode returns no token.
+      if (result.idToken && result.expiresAt) {
+        saveIdToken(result.idToken, result.expiresAt);
+      }
       window.toast(`Welcome back, ${result.user.name}!`, 'success');
       // Slight delay so the toast is visible before redirect
       setTimeout(() => {
@@ -324,6 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (result.ok) {
       // Auto-login the freshly created user
       saveSession(result.user);
+      if (result.idToken && result.expiresAt) {
+        saveIdToken(result.idToken, result.expiresAt);
+      }
       window.toast(`Welcome aboard, ${result.user.name.split(' ')[0]}!`, 'success');
       setTimeout(() => {
         window.location.href = 'dashboard.html';
@@ -336,3 +470,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
+/* =========================================================================
+   BOOTSTRAP — runs once per page load:
+   if we have a still-valid token, schedule its refresh; if we have a
+   session but the token already expired, kick off a refresh immediately
+   to try to recover it.
+   ========================================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const stored = readStoredToken();
+  if (!stored) return;
+  const nowSec = Math.floor(Date.now() / 1000);
+  if (stored.expiresAt > nowSec) {
+    scheduleRefresh(stored.expiresAt);
+  } else {
+    // Token expired while the tab was closed — try once to recover. If
+    // the Worker rejects (because it really is past exp), we'll log out.
+    refreshIdToken();
+  }
+});
+
+
+/* =========================================================================
+   GLIA DIRECT ID — define getGliaContext BEFORE the Glia script loads
+   so it has a fresh idToken to read on every poll.
+   ========================================================================= */
+window.getGliaContext = function () {
+  const idToken = getIdToken();
+  return idToken ? { idToken } : {};
+};
