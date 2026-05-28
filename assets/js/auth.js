@@ -493,10 +493,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* =========================================================================
-   GLIA DIRECT ID — define getGliaContext BEFORE the Glia script loads
-   so it has a fresh idToken to read on every poll.
+   GLIA DIRECT ID — window.getGliaContext is defined as a tiny inline
+   <script> in the <head> of every HTML page (see e.g. index.html) so the
+   async Glia integration script can read the token on its very first
+   poll, even before this file has parsed. We deliberately DON'T redefine
+   it here, so there's a single source of truth for that function.
    ========================================================================= */
-window.getGliaContext = function () {
-  const idToken = getIdToken();
-  return idToken ? { idToken } : {};
-};

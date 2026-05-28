@@ -17,6 +17,22 @@
 -->
 <html lang="en">
 <head>
+  <script>
+    // Define getGliaContext synchronously so the async Glia script can
+    // read the visitor's Direct ID token on its very first poll — even
+    // before /assets/js/auth.js has parsed at the bottom of <body>. We
+    // read the token straight from localStorage (key set by auth.js'
+    // saveIdToken()). Returns {} for anonymous visitors.
+    window.getGliaContext = function () {
+      try {
+        var stored = JSON.parse(localStorage.getItem('mgb_id_token') || 'null');
+        if (!stored || !stored.idToken) return {};
+        var nowSec = Math.floor(Date.now() / 1000);
+        if (stored.expiresAt - 10 < nowSec) return {};
+        return { idToken: stored.idToken };
+      } catch (e) { return {}; }
+    };
+  </script>
   <script async src="https://api.glia.com/salemove_integration.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
