@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+  login.html — Online Banking Sign In
+  ---------------------------------------------------------------
+  Two-column layout:
+    • Left: brand panel with bullet features (hidden on mobile)
+    • Right: actual sign-in form which posts to Google Sheets via
+      Apps Script (or falls back to demo creds — see auth.js).
+  After successful sign-in user is redirected to dashboard.html.
+-->
+<html lang="en">
+<head>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Ahoura's Megagankybank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+  <!-- Simplified header — just the logo and a "back to site" link -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank</a>
+      <div class="nav-cta">
+        <a href="index.html" class="btn btn--ghost btn--sm">← Back to site</a>
+        <a href="contact.html" class="btn btn--secondary btn--sm">Need help?</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="login-page">
+
+    <!-- ============================================================
+         LEFT — Brand panel with feature checklist
+         Hidden on screens < 960px (see CSS responsive section)
+         ============================================================ -->
+    <div class="login-left">
+      <h2>Welcome back to <em style="font-style: normal; color: var(--color-tan);">Megagankybank</em>.</h2>
+      <p>Your accounts are loaded and waiting — and the kettle's on.</p>
+      <ul class="login-features">
+        <li>Bank-grade 256-bit encryption</li>
+        <li>FDIC insured up to $250,000</li>
+        <li>Biometric sign-in on supported devices</li>
+        <li>24/7 fraud monitoring on every account</li>
+        <li>Two-factor authentication built in</li>
+      </ul>
+      <p style="position: relative; z-index: 2; margin-top: var(--space-xl); font-size: 0.85rem; opacity: 0.7;">
+        — Trusted by 2.4 million customers since 2006
+      </p>
+    </div>
+
+    <!-- ============================================================
+         RIGHT — The actual login form
+         ============================================================ -->
+    <div class="login-right">
+      <h1>Sign in</h1>
+      <p class="lede">Use your Megagankybank email and password to access online banking.</p>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email address</label>
+          <input id="login-email" name="email" type="email" class="form-input" placeholder="you@megagankybank.com" autocomplete="email" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" class="form-input" placeholder="Your password" autocomplete="current-password" required>
+        </div>
+
+        <div class="flex justify-between items-center mb-md" style="font-size: 0.9rem;">
+          <label class="flex items-center gap-sm" style="cursor: pointer;">
+            <input type="checkbox" name="remember"> Remember me
+          </label>
+          <a href="#" onclick="event.preventDefault(); window.toast('Password reset emailed to you (demo).','')">Forgot password?</a>
+        </div>
+
+        <div class="form-error"></div>
+
+        <button type="submit" class="btn btn--primary btn--block btn--lg">Sign in →</button>
+
+        <div class="login-divider">or</div>
+
+        <button type="button" id="fill-demo" class="btn btn--secondary btn--block">Fill demo credentials</button>
+
+        <p class="text-muted text-center mt-md" style="font-size: 0.85rem;">
+          Don't have an account?
+          <a href="services.html#checking">Open one in 5 minutes →</a>
+        </p>
+      </form>
+
+      <!-- Demo credentials notice — only visible when fallback is active -->
+      <div style="margin-top: var(--space-xl); padding: var(--space-md); background: var(--color-cream); border-radius: var(--radius-md); font-size: 0.85rem;">
+        <strong>👋 Demo mode active.</strong>
+        <p style="margin: 4px 0; color: var(--color-text-muted);">
+          Until you connect a Google Sheet, you can sign in with:
+        </p>
+        <code style="display: block; padding: 8px; background: var(--color-white); border-radius: var(--radius-sm); margin-top: 6px;">
+          demo@megagankybank.com · demo1234
+        </code>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

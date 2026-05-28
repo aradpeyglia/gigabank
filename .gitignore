@@ -1,0 +1,22 @@
+# macOS clutter
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node (in case you ever add tooling)
+node_modules/
+
+# Local environment files — never commit secrets
+.env
+.env.local

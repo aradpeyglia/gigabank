@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<!--
+  services.html — Accounts & Services overview
+  ---------------------------------------------------------------
+  Sections (with internal anchor IDs the nav dropdown jumps to):
+    1. Header
+    2. Page hero
+    3. #checking — Checking accounts comparison cards
+    4. #savings  — Savings & CDs with rate ladder
+    5. #cards    — Credit cards carousel
+    6. #investing — Investment products grid w/ select dropdown
+    7. #business — Business banking section
+    8. Security badge strip
+    9. CTA
+   10. Footer
+-->
+<html lang="en">
+<head>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Ahoura's Megagankybank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+  <style>
+    /* Pricing-style account cards, three side-by-side                       */
+    .account-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      position: relative;
+    }
+    .account-card.featured {
+      border: 2px solid var(--color-tan);
+      transform: scale(1.03);
+    }
+    .account-card .price {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      color: var(--color-brown-dark);
+    }
+    .account-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .account-card ul li::before {
+      content: '✓ ';
+      color: var(--color-tan-dark);
+      font-weight: 700;
+    }
+    .account-card ul li.no::before {
+      content: '✕ ';
+      color: var(--color-text-muted);
+    }
+    .account-card ul li.no {
+      color: var(--color-text-muted);
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    /* Side-scrolling card row used for credit cards                        */
+    .card-rail {
+      display: flex;
+      gap: var(--space-md);
+      overflow-x: auto;
+      padding-bottom: var(--space-md);
+      scroll-snap-type: x mandatory;
+    }
+    .card-rail > * {
+      flex: 0 0 320px;
+      scroll-snap-align: start;
+    }
+
+    /* Fake plastic credit card visuals — pure CSS gradients                */
+    .credit-card-visual {
+      aspect-ratio: 1.586 / 1;
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .credit-card-visual.tan   { background: linear-gradient(135deg, #D6B884, #8B6B43); }
+    .credit-card-visual.brown { background: linear-gradient(135deg, #5C4527, #8B6B43); }
+    .credit-card-visual.dark  { background: linear-gradient(135deg, #2A1F12, #5C4527); }
+    .credit-card-visual.cream { background: linear-gradient(135deg, #EFE3CC, #D6B884); color: var(--color-brown-dark); }
+    .credit-card-visual .chip {
+      width: 38px; height: 28px;
+      background: linear-gradient(135deg, #d4af37, #a48528);
+      border-radius: 4px;
+    }
+    .credit-card-visual .number {
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.15em;
+      font-size: 1.1rem;
+    }
+    .credit-card-visual .brand {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* Investing select-driven content swap */
+    .invest-select {
+      max-width: 360px;
+      margin: 0 auto var(--space-lg);
+    }
+    .invest-panel {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .invest-panel.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================ HEADER -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html">Services ▾</a>
+          <div class="nav-dropdown-menu">
+            <a href="services.html#checking">Checking Accounts</a>
+            <a href="services.html#savings">Savings & CDs</a>
+            <a href="services.html#cards">Credit Cards</a>
+            <a href="services.html#investing">Investing</a>
+            <a href="services.html#business">Business Banking</a>
+          </div>
+        </li>
+        <li><a href="loans.html">Loans</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn--ghost btn--sm">Sign in</a>
+        <a href="services.html" class="btn btn--primary btn--sm">Open Account</a>
+        <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>Accounts that grow <em style="color: var(--color-brown); font-style:normal;">with you.</em></h1>
+      <p>Pick the right mix of checking, savings, credit, and investments. Open in five minutes — switch any time.</p>
+      <ol class="breadcrumb">
+        <li><a href="index.html">Home</a></li>
+        <li>Services</li>
+      </ol>
+      <!-- In-page anchor nav for the long-scrolling sections below -->
+      <div class="flex gap-sm flex-wrap mt-md" style="justify-content: center;">
+        <a href="#checking" class="btn btn--ghost btn--sm">Checking</a>
+        <a href="#savings" class="btn btn--ghost btn--sm">Savings & CDs</a>
+        <a href="#cards" class="btn btn--ghost btn--sm">Credit Cards</a>
+        <a href="#investing" class="btn btn--ghost btn--sm">Investing</a>
+        <a href="#business" class="btn btn--ghost btn--sm">Business</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ CHECKING -->
+  <section class="section" id="checking">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Checking Accounts</span>
+        <h2>The one for daily money</h2>
+        <p>Three options. No hidden fees on any of them.</p>
+      </div>
+
+      <div class="grid grid--3">
+        <div class="card account-card reveal">
+          <h3>Essential Checking</h3>
+          <div class="price">Free</div>
+          <p class="text-muted" style="font-size: 0.9rem;">For everyday spending</p>
+          <ul>
+            <li>Free debit card</li>
+            <li>55,000+ free ATMs</li>
+            <li>Mobile check deposit</li>
+            <li>Bill pay & Zelle</li>
+            <li class="no">Out-of-network ATM rebates</li>
+            <li class="no">Wire transfer fee waiver</li>
+          </ul>
+          <a href="login.html" class="btn btn--secondary btn--block">Open Essential</a>
+        </div>
+
+        <div class="card account-card featured reveal">
+          <span class="badge badge--success" style="position: absolute; top: -12px; right: 20px;">Most Popular</span>
+          <h3>Cream Checking</h3>
+          <div class="price">$0<span style="font-size: 0.85rem; color: var(--color-text-muted);"> w/ $1,500 direct deposit</span></div>
+          <p class="text-muted" style="font-size: 0.9rem;">For people who want a little more</p>
+          <ul>
+            <li>Everything in Essential</li>
+            <li>1% cashback on debit purchases</li>
+            <li>Early direct deposit (up to 2 days)</li>
+            <li>Out-of-network ATM rebates ($20/mo)</li>
+            <li>Overdraft forgiveness up to $200</li>
+            <li class="no">Dedicated relationship manager</li>
+          </ul>
+          <a href="login.html" class="btn btn--primary btn--block">Open Cream</a>
+        </div>
+
+        <div class="card account-card reveal">
+          <h3>Tan Premier</h3>
+          <div class="price">$25<span style="font-size: 0.85rem; color: var(--color-text-muted);">/mo</span></div>
+          <p class="text-muted" style="font-size: 0.9rem;">For high-balance customers</p>
+          <ul>
+            <li>Everything in Cream</li>
+            <li>Unlimited wire transfers</li>
+            <li>4 free safe-deposit boxes</li>
+            <li>Dedicated relationship manager</li>
+            <li>Concierge travel & rewards</li>
+            <li>Free notary services</li>
+          </ul>
+          <a href="login.html" class="btn btn--secondary btn--block">Open Premier</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ SAVINGS / CDs -->
+  <section class="section section--alt" id="savings">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Savings & CDs</span>
+        <h2>Make your money work harder</h2>
+      </div>
+
+      <div class="grid grid--2 reveal" style="align-items: stretch;">
+        <div class="card">
+          <span class="badge badge--success">Top APY in U.S.</span>
+          <h3 style="margin: var(--space-sm) 0;">Tan High-Yield Savings</h3>
+          <div style="font-family: var(--font-serif); font-size: 3rem; color: var(--color-brown-dark);">4.50% APY</div>
+          <p class="text-muted">No minimums, no monthly fees, no rate caps. Interest compounds daily.</p>
+          <a href="login.html" class="btn btn--primary mt-md">Open Tan Savings</a>
+        </div>
+
+        <!-- CD rate ladder — visualized as a 4-row mini table              -->
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md);">Certificates of Deposit (CDs)</h3>
+          <table class="table" style="background: transparent;">
+            <thead>
+              <tr><th>Term</th><th>APY</th><th>Min</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>6 months</td><td><strong>4.85%</strong></td><td>$500</td></tr>
+              <tr><td>12 months</td><td><strong>5.10%</strong></td><td>$500</td></tr>
+              <tr><td>24 months</td><td><strong>4.95%</strong></td><td>$500</td></tr>
+              <tr><td>60 months</td><td><strong>4.60%</strong></td><td>$500</td></tr>
+            </tbody>
+          </table>
+          <a href="login.html" class="btn btn--secondary mt-md">Choose a term</a>
+        </div>
+      </div>
+
+      <!-- Savings calculator-style stat bar                                  -->
+      <div class="reveal mt-xl" style="background: linear-gradient(135deg, var(--color-cream), var(--color-tan)); padding: var(--space-xl); border-radius: var(--radius-xl); text-align: center;">
+        <h3 style="margin-bottom: var(--space-sm);">$10,000 at 4.50% APY for 5 years</h3>
+        <p style="color: var(--color-brown-dark); font-family: var(--font-serif); font-size: 2.5rem;">
+          becomes <strong>$12,461.82</strong>
+        </p>
+        <p class="text-muted">vs $10,050 in a typical 0.10% APY savings account.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ CREDIT CARDS -->
+  <section class="section" id="cards">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Credit Cards</span>
+        <h2>Four cards, no annual fees on three of them</h2>
+      </div>
+
+      <div class="card-rail reveal">
+        <!-- Cream Cashback card -->
+        <div>
+          <div class="credit-card-visual cream">
+            <div class="chip"></div>
+            <div class="number">4720 •••• •••• 8432</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <div>
+                <div style="font-size:0.7rem; opacity:0.8;">MEMBER</div>
+                <div style="font-size:0.95rem;">A. RADPEY</div>
+              </div>
+              <div class="brand">Megagankybank</div>
+            </div>
+          </div>
+          <h4 class="mt-md">Cream Cashback</h4>
+          <p class="text-muted" style="font-size: 0.9rem;">3% dining · 2% groceries · 1% everywhere. No annual fee.</p>
+          <a href="login.html" class="card-link">Apply →</a>
+        </div>
+
+        <!-- Tan Travel card -->
+        <div>
+          <div class="credit-card-visual tan">
+            <div class="chip"></div>
+            <div class="number">4720 •••• •••• 2104</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <div>
+                <div style="font-size:0.7rem; opacity:0.8;">MEMBER</div>
+                <div style="font-size:0.95rem;">A. RADPEY</div>
+              </div>
+              <div class="brand">Megagankybank</div>
+            </div>
+          </div>
+          <h4 class="mt-md">Tan Travel</h4>
+          <p class="text-muted" style="font-size: 0.9rem;">3x points on travel · 60,000 bonus points · $95 annual fee.</p>
+          <a href="login.html" class="card-link">Apply →</a>
+        </div>
+
+        <!-- Brown Business card -->
+        <div>
+          <div class="credit-card-visual brown">
+            <div class="chip"></div>
+            <div class="number">4720 •••• •••• 7711</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <div>
+                <div style="font-size:0.7rem; opacity:0.8;">BUSINESS</div>
+                <div style="font-size:0.95rem;">M.B. LLC</div>
+              </div>
+              <div class="brand">Megagankybank</div>
+            </div>
+          </div>
+          <h4 class="mt-md">Brown Business</h4>
+          <p class="text-muted" style="font-size: 0.9rem;">2% on all business spend · Employee cards free · No annual fee.</p>
+          <a href="login.html" class="card-link">Apply →</a>
+        </div>
+
+        <!-- Espresso Black card -->
+        <div>
+          <div class="credit-card-visual dark">
+            <div class="chip"></div>
+            <div class="number">4720 •••• •••• 0001</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <div>
+                <div style="font-size:0.7rem; opacity:0.8;">PREMIER</div>
+                <div style="font-size:0.95rem;">A. RADPEY</div>
+              </div>
+              <div class="brand">Megagankybank</div>
+            </div>
+          </div>
+          <h4 class="mt-md">Espresso Black</h4>
+          <p class="text-muted" style="font-size: 0.9rem;">5x dining · airport lounges · concierge · $395 annual fee.</p>
+          <a href="login.html" class="card-link">Apply →</a>
+        </div>
+      </div>
+      <p class="text-muted text-center mt-md" style="font-size: 0.85rem;">← scroll for more cards →</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ INVESTING -->
+  <section class="section section--alt" id="investing">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Investing</span>
+        <h2>Pick a goal, we'll do the rest</h2>
+      </div>
+
+      <!-- Native select acts as a "tabs" alternative, more compact         -->
+      <div class="invest-select reveal">
+        <label class="form-label" for="invest-pick">I'm saving for:</label>
+        <select id="invest-pick" class="form-select" onchange="
+          document.querySelectorAll('.invest-panel').forEach(p => p.classList.remove('active'));
+          document.querySelector('.invest-panel[data-goal=&quot;' + this.value + '&quot;]').classList.add('active');
+        ">
+          <option value="retirement">Retirement (IRA / Roth)</option>
+          <option value="house">A house</option>
+          <option value="college">College for my kid</option>
+          <option value="wealth">Long-term wealth</option>
+        </select>
+      </div>
+
+      <div class="invest-panel active reveal" data-goal="retirement">
+        <div class="grid grid--3">
+          <div class="card"><div class="card-icon">🌅</div><h4>Traditional IRA</h4><p>Tax-deferred. Contribute up to $7,000/yr.</p></div>
+          <div class="card"><div class="card-icon">🌟</div><h4>Roth IRA</h4><p>Tax-free growth. Same $7,000/yr limit.</p></div>
+          <div class="card"><div class="card-icon">🏢</div><h4>401(k) Rollover</h4><p>Bring an old 401(k) to us in 4 clicks.</p></div>
+        </div>
+      </div>
+      <div class="invest-panel reveal" data-goal="house">
+        <div class="grid grid--3">
+          <div class="card"><div class="card-icon">🏠</div><h4>House Fund</h4><p>Conservative bond/cash blend, 6–24 mo horizon.</p></div>
+          <div class="card"><div class="card-icon">💵</div><h4>Tan HYSA</h4><p>4.50% APY, fully liquid, FDIC insured.</p></div>
+          <div class="card"><div class="card-icon">📊</div><h4>Treasury Bills</h4><p>Direct access to 4-, 13-, and 26-week T-Bills.</p></div>
+        </div>
+      </div>
+      <div class="invest-panel reveal" data-goal="college">
+        <div class="grid grid--3">
+          <div class="card"><div class="card-icon">🎓</div><h4>529 Plan</h4><p>Tax-advantaged college savings, by state.</p></div>
+          <div class="card"><div class="card-icon">🏛️</div><h4>UTMA Account</h4><p>Flexible custodial account in your child's name.</p></div>
+          <div class="card"><div class="card-icon">📚</div><h4>Coverdell ESA</h4><p>K–12 + college, $2,000/yr contribution.</p></div>
+        </div>
+      </div>
+      <div class="invest-panel reveal" data-goal="wealth">
+        <div class="grid grid--3">
+          <div class="card"><div class="card-icon">📈</div><h4>Robo Portfolio</h4><p>Algorithmic, 0.25% fee, ESG options.</p></div>
+          <div class="card"><div class="card-icon">🧑‍💼</div><h4>Advisor-Managed</h4><p>Human advisor, 0.75% fee, $25k minimum.</p></div>
+          <div class="card"><div class="card-icon">🌍</div><h4>Self-Directed</h4><p>Trade stocks, ETFs, and crypto commission-free.</p></div>
+        </div>
+      </div>
+
+      <div class="text-center mt-xl">
+        <a href="login.html" class="btn btn--primary btn--lg">Start investing in 5 minutes</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ BUSINESS -->
+  <section class="section" id="business">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Business Banking</span>
+        <h2>From side-hustle to scaling team</h2>
+      </div>
+      <div class="grid grid--2" style="align-items: center;">
+        <div class="reveal">
+          <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=700&q=80" alt="Small business storefront" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);" loading="lazy">
+        </div>
+        <div class="reveal">
+          <h3>Business banking, redesigned for the way you actually work.</h3>
+          <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+            Business checking with no monthly fee, integrated payroll, accept-anywhere POS, and a dedicated relationship manager. Plus business credit, lending, and merchant services under one roof.
+          </p>
+          <div class="grid grid--2 mb-lg" style="gap: var(--space-sm);">
+            <div class="card" style="padding: var(--space-md);"><strong>Business Basic</strong><p class="text-muted" style="font-size: 0.85rem;">Free · 200 free tx/mo</p></div>
+            <div class="card" style="padding: var(--space-md);"><strong>Business Pro</strong><p class="text-muted" style="font-size: 0.85rem;">$15/mo · Unlimited tx</p></div>
+            <div class="card" style="padding: var(--space-md);"><strong>Merchant Services</strong><p class="text-muted" style="font-size: 0.85rem;">2.4% + $0.10 per swipe</p></div>
+            <div class="card" style="padding: var(--space-md);"><strong>Payroll</strong><p class="text-muted" style="font-size: 0.85rem;">From $30/mo + $4/employee</p></div>
+          </div>
+          <div class="flex gap-md flex-wrap">
+            <a href="login.html" class="btn btn--primary">Open business account</a>
+            <a href="contact.html" class="btn btn--secondary">Talk to a specialist</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ SECURITY -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Security</span>
+        <h2>Your money, fully protected</h2>
+      </div>
+      <div class="grid grid--4">
+        <div class="card text-center reveal"><div class="card-icon" style="margin: 0 auto var(--space-md);">🛡️</div><h4>FDIC Insured</h4><p>Up to $250,000 per depositor.</p></div>
+        <div class="card text-center reveal"><div class="card-icon" style="margin: 0 auto var(--space-md);">🔒</div><h4>256-bit encryption</h4><p>Bank-grade everywhere, always.</p></div>
+        <div class="card text-center reveal"><div class="card-icon" style="margin: 0 auto var(--space-md);">👁️</div><h4>24/7 fraud monitoring</h4><p>Real-time alerts on every txn.</p></div>
+        <div class="card text-center reveal"><div class="card-icon" style="margin: 0 auto var(--space-md);">📞</div><h4>Live human support</h4><p>Average wait: 32 seconds.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="nav-brand" style="color: var(--color-tan);"><span class="nav-brand-logo">M</span>Megagankybank</div>
+          <p>Banking that finally feels like home. Member FDIC. Equal Housing Lender.</p>
+          <div class="footer-social mt-md">
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Bank</h4>
+          <ul>
+            <li><a href="services.html#checking">Checking</a></li>
+            <li><a href="services.html#savings">Savings</a></li>
+            <li><a href="services.html#cards">Credit Cards</a></li>
+            <li><a href="loans.html">Loans</a></li>
+            <li><a href="services.html#investing">Investing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="about.html#leadership">Leadership</a></li>
+            <li><a href="about.html#careers">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Investor relations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="contact.html#faq">FAQ</a></li>
+            <li><a href="#">Security center</a></li>
+            <li><a href="#">Find a branch</a></li>
+            <li><a href="#">Report fraud</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-newsletter">
+          <h4>Get our weekly money tips</h4>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Short, useful, and we promise we'll never sell your email.</p>
+          <form>
+            <input type="email" placeholder="you@email.com" required>
+            <button type="submit" class="btn btn--tan btn--sm">Join</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Ahoura's Megagankybank, N.A. All rights reserved. This is a demo site — not a real bank.</span>
+        <div class="flex gap-md">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

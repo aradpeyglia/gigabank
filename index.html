@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<!--
+  index.html — Home page for Ahoura's Megagankybank
+  ---------------------------------------------------------------
+  Loaded sections (top to bottom):
+    1. Sticky header w/ logo, dropdown nav, CTAs
+    2. Stock ticker marquee
+    3. Hero with text + slideshow + floating badges
+    4. Animated stats counters
+    5. Services 3-card grid
+    6. Tabs section (Personal / Business / Wealth)
+    7. Image-card "Featured products" grid
+    8. Testimonials carousel
+    9. App download CTA banner
+   10. Latest news cards
+   11. Newsletter / footer CTA + full footer
+-->
+<html lang="en">
+<head>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ahoura's Megagankybank — Banking That Feels Like Home</title>
+  <meta name="description" content="Personal, business, and wealth banking with a warm, modern touch. Member FDIC.">
+  <!-- Google Fonts: Inter (body) + Playfair Display (headings) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER / NAVIGATION
+       Sticky, contains: logo, main nav with dropdown, login + open
+       account CTAs. The .nav-dropdown li has hover-expand submenu.
+       ============================================================ -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav-brand">
+        <span class="nav-brand-logo">M</span>
+        Megagankybank
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <!-- Hover-revealing dropdown of related pages -->
+        <li class="nav-dropdown">
+          <a href="services.html">Services ▾</a>
+          <div class="nav-dropdown-menu">
+            <a href="services.html#checking">Checking Accounts</a>
+            <a href="services.html#savings">Savings & CDs</a>
+            <a href="services.html#cards">Credit Cards</a>
+            <a href="services.html#investing">Investing</a>
+            <a href="services.html#business">Business Banking</a>
+          </div>
+        </li>
+        <li><a href="loans.html">Loans</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn--ghost btn--sm">Sign in</a>
+        <a href="services.html" class="btn btn--primary btn--sm">Open Account</a>
+        <!-- Hamburger for mobile (hidden ≥960px via CSS) -->
+        <button class="nav-toggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MARKET TICKER — scrolling marquee of fake stock symbols
+       JS duplicates the inner HTML to make the animation seamless.
+       ============================================================ -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span class="ticker-item"><span class="ticker-symbol">MGB</span> $148.20 <span class="ticker-up">▲ 1.42%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">AAPL</span> $224.18 <span class="ticker-up">▲ 0.84%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">MSFT</span> $419.05 <span class="ticker-down">▼ 0.21%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">VTI</span> $268.40 <span class="ticker-up">▲ 0.41%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">TSLA</span> $173.59 <span class="ticker-down">▼ 2.18%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">GOLD</span> $2,341.10 <span class="ticker-up">▲ 0.55%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">BTC</span> $68,214.50 <span class="ticker-up">▲ 3.42%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">EUR/USD</span> 1.0842 <span class="ticker-down">▼ 0.09%</span></span>
+      <span class="ticker-item"><span class="ticker-symbol">10Y</span> 4.21% <span class="ticker-down">▼ 0.03%</span></span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HERO — left column copy + actions, right column slideshow.
+       Floating badges layered on top with float animation.
+       ============================================================ -->
+  <section class="hero">
+    <div class="hero-blob"></div>
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <span class="eyebrow">✶ Member FDIC · Est. 2026</span>
+        <h1>Banking that finally <em style="color: var(--color-brown); font-style:normal;">feels like home.</em></h1>
+        <p class="lede">
+          Open an account in minutes, earn industry-leading rates, and get a
+          warm, human-feeling experience every time you log in. Welcome to
+          Ahoura's Megagankybank.
+        </p>
+        <div class="hero-actions">
+          <a href="login.html" class="btn btn--primary btn--lg">Sign in to online banking →</a>
+          <a href="services.html" class="btn btn--secondary btn--lg">Explore accounts</a>
+        </div>
+        <!-- Inline trust signals -->
+        <div class="flex gap-md flex-wrap" style="font-size: 0.9rem; color: var(--color-text-muted);">
+          <span>★★★★★ 4.9 / 5 on Trustpilot</span>
+          <span>· 2.4M+ happy customers</span>
+          <span>· 247 branches nationwide</span>
+        </div>
+      </div>
+
+      <!-- Right column: slideshow with 3 banking-themed photos -->
+      <div class="hero-image-wrap">
+        <div class="slideshow">
+          <div class="slideshow-slide active">
+            <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80" alt="Person reviewing finances on laptop" loading="lazy">
+          </div>
+          <div class="slideshow-slide">
+            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80" alt="Banking advisor meeting" loading="lazy">
+          </div>
+          <div class="slideshow-slide">
+            <img src="https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=800&q=80" alt="Mobile banking app on phone" loading="lazy">
+          </div>
+        </div>
+
+        <!-- Three floating badges that bob with CSS @keyframes float -->
+        <div class="hero-badge hero-badge--1">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--color-cream); display: grid; place-items: center;">💰</div>
+          <div>
+            <strong>4.5% APY</strong><br>
+            <span style="color: var(--color-text-muted);">High-yield savings</span>
+          </div>
+        </div>
+        <div class="hero-badge hero-badge--2">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--color-cream); display: grid; place-items: center;">🔒</div>
+          <div>
+            <strong>FDIC Insured</strong><br>
+            <span style="color: var(--color-text-muted);">Up to $250,000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STATS COUNTERS — numbers animate up from 0 when scrolled into
+       view (handled by initCounters in main.js)
+       ============================================================ -->
+  <section class="section">
+    <div class="container">
+      <div class="stats-bar reveal">
+        <div class="stat">
+          <span class="stat-number" data-counter="2400000" data-prefix="" data-suffix="+">0</span>
+          <span class="stat-label">Customers Served</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-counter="48" data-prefix="$" data-suffix="B">0</span>
+          <span class="stat-label">Assets Managed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-counter="247">0</span>
+          <span class="stat-label">Branches Nationwide</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-counter="4.9" data-decimals="1">0</span>
+          <span class="stat-label">Customer Rating</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SERVICES GRID — three big cards linking to different pages
+       ============================================================ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">What we do</span>
+        <h2>Everything you need under one warm roof</h2>
+        <p>From your first savings account to your retirement portfolio, we've spent twenty years making banking feel less like banking.</p>
+      </div>
+
+      <div class="grid grid--3">
+        <div class="card reveal">
+          <div class="card-icon">🏦</div>
+          <h3>Everyday Banking</h3>
+          <p>Free checking, no-fee ATMs, mobile deposits, and bill pay. Fast, friendly, and built to keep more of your money in your pocket.</p>
+          <a href="services.html#checking" class="card-link">Open a checking account →</a>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-icon">💰</div>
+          <h3>Save & Grow</h3>
+          <p>4.5% APY on our high-yield savings. Lock in 5.10% on a 12-month CD. No minimums, no nonsense, no surprises.</p>
+          <a href="services.html#savings" class="card-link">Explore savings →</a>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-icon">🏠</div>
+          <h3>Loans & Mortgages</h3>
+          <p>Home, auto, and personal loans with transparent rates. Use our calculator to estimate payments in seconds.</p>
+          <a href="loans.html" class="card-link">Use loan calculator →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TABS — Personal vs Business vs Wealth (interactive content)
+       ============================================================ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Choose your path</span>
+        <h2>Built for every chapter of your financial life</h2>
+      </div>
+
+      <!-- Tabs nav — buttons toggle the panels below by data-tab attr -->
+      <div class="tabs">
+        <button class="tab active" data-tab="personal">Personal</button>
+        <button class="tab" data-tab="business">Business</button>
+        <button class="tab" data-tab="wealth">Wealth</button>
+        <button class="tab" data-tab="student">Student</button>
+      </div>
+
+      <div class="tab-panel active" data-panel="personal">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>For everyday life</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              Your daily money, simplified. Free checking, a debit card that
+              earns 1% back, instant Venmo/Zelle, and 24/7 human support.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+              <li>✓ No monthly fees, ever</li>
+              <li>✓ 55,000+ fee-free ATMs</li>
+              <li>✓ Early direct deposit (up to 2 days)</li>
+              <li>✓ Overdraft forgiveness up to $200</li>
+            </ul>
+            <a href="services.html#checking" class="btn btn--primary">Open personal account</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1565514020179-026b92b84bb6?w=600&q=80" alt="Person using mobile banking" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="business">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>For your business</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              From solopreneur to scaling team, we've got business checking,
+              merchant services, payroll integrations, and small-business loans.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+              <li>✓ Unlimited transactions on Business Pro</li>
+              <li>✓ QuickBooks & Xero sync</li>
+              <li>✓ SBA-preferred lender</li>
+              <li>✓ Dedicated relationship manager</li>
+            </ul>
+            <a href="services.html#business" class="btn btn--primary">Explore business banking</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80" alt="Small business owner at counter" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="wealth">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>For long-term wealth</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              Personalized portfolios, tax-advantaged accounts, and a
+              certified advisor who actually returns your calls. From your
+              first $1,000 to your generational legacy.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+              <li>✓ IRA, Roth, 529, and trust accounts</li>
+              <li>✓ Low 0.25% advisory fee</li>
+              <li>✓ ESG-focused portfolios available</li>
+              <li>✓ Estate planning consultations</li>
+            </ul>
+            <a href="services.html#investing" class="btn btn--primary">Plan your future</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1579621970795-87facc2f976d?w=600&q=80" alt="Investment chart on screen" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="student">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>For students & first-timers</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              Your first bank account shouldn't come with hidden fees or scary
+              forms. Open a Student Checking + Savings combo in five minutes.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+              <li>✓ Free until age 24</li>
+              <li>✓ Budgeting & savings goals built in</li>
+              <li>✓ Optional parental oversight</li>
+              <li>✓ Discounts at 800+ student brands</li>
+            </ul>
+            <a href="services.html" class="btn btn--primary">Open student account</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80" alt="Student studying with laptop" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FEATURED PRODUCTS — image cards with hover lift
+       ============================================================ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Featured</span>
+        <h2>Products our customers love</h2>
+        <p>Tap any card to dive deeper, or jump straight to opening.</p>
+      </div>
+
+      <div class="grid grid--4">
+        <div class="card card--media reveal">
+          <img src="https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=400&q=80" alt="Credit card on cream background" loading="lazy">
+          <div class="card-body">
+            <span class="badge badge--success">New</span>
+            <h4 style="margin: 8px 0;">Cream Cashback Card</h4>
+            <p>3% on dining · 2% on groceries · 1% everywhere else. No annual fee.</p>
+            <a href="services.html#cards" class="card-link">Learn more →</a>
+          </div>
+        </div>
+
+        <div class="card card--media reveal">
+          <img src="https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?w=400&q=80" alt="Modern home" loading="lazy">
+          <div class="card-body">
+            <span class="badge">Mortgage</span>
+            <h4 style="margin: 8px 0;">First-Home Loan</h4>
+            <p>As low as 6.25% APR for first-time buyers with strong credit.</p>
+            <a href="loans.html" class="card-link">Calculate →</a>
+          </div>
+        </div>
+
+        <div class="card card--media reveal">
+          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80" alt="Person at desk reviewing finances" loading="lazy">
+          <div class="card-body">
+            <span class="badge badge--warning">High-yield</span>
+            <h4 style="margin: 8px 0;">Tan Savings Account</h4>
+            <p>Earn 4.5% APY with no minimums, no monthly fees, no nonsense.</p>
+            <a href="services.html#savings" class="card-link">Open today →</a>
+          </div>
+        </div>
+
+        <div class="card card--media reveal">
+          <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400&q=80" alt="Two people in business meeting" loading="lazy">
+          <div class="card-body">
+            <span class="badge">Business</span>
+            <h4 style="margin: 8px 0;">Small Business Suite</h4>
+            <p>Checking, lending, and payroll bundled with one relationship manager.</p>
+            <a href="services.html#business" class="card-link">Explore →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TESTIMONIALS — auto-playing carousel
+       ============================================================ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">What customers say</span>
+        <h2>2.4 million people. One warm welcome.</h2>
+      </div>
+
+      <div class="carousel reveal" data-autoplay="6000">
+        <div class="carousel-track">
+          <div class="carousel-slide">
+            <blockquote>"Switching to Megagankybank was the easiest financial decision I've ever made. The app is gorgeous, the rates are honest, and they actually answer the phone."</blockquote>
+            <cite>— Marisol P., Small Business Owner · Brooklyn, NY</cite>
+          </div>
+          <div class="carousel-slide">
+            <blockquote>"I refinanced my mortgage in three weeks and saved $412 a month. My loan officer texted me updates like an actual human being."</blockquote>
+            <cite>— Daniel R., Homeowner · Austin, TX</cite>
+          </div>
+          <div class="carousel-slide">
+            <blockquote>"I'm a college student and my Megagankybank account was the first one I opened without my parents. No fees ever. I tell every friend about it."</blockquote>
+            <cite>— Priya S., Student · Berkeley, CA</cite>
+          </div>
+          <div class="carousel-slide">
+            <blockquote>"Their wealth advisors helped me set up a Roth IRA in my twenties. Five years later, I'm so glad they did. They explained everything without jargon."</blockquote>
+            <cite>— Marcus L., Engineer · Seattle, WA</cite>
+          </div>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-btn prev" aria-label="Previous">‹</button>
+          <div class="carousel-dots"></div>
+          <button class="carousel-btn next" aria-label="Next">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       APP DOWNLOAD CTA BANNER — external links
+       ============================================================ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="reveal" style="background: linear-gradient(135deg, var(--color-brown-dark), var(--color-brown)); color: white; border-radius: var(--radius-xl); padding: var(--space-2xl); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); align-items: center; overflow: hidden; position: relative;">
+        <div style="position: relative; z-index: 2;">
+          <h2 style="color: white; margin-bottom: var(--space-md);">Take your bank with you</h2>
+          <p style="opacity: 0.9; margin-bottom: var(--space-lg);">
+            The Megagankybank app lets you deposit checks, send money, freeze cards, and chat with a human — all in under a tap.
+          </p>
+          <div class="flex gap-sm flex-wrap">
+            <!-- External links to fake App Store / Play Store URLs -->
+            <a href="https://apps.apple.com" target="_blank" rel="noopener" class="btn btn--tan">📱 App Store</a>
+            <a href="https://play.google.com" target="_blank" rel="noopener" class="btn btn--tan">🤖 Google Play</a>
+            <button class="btn btn--ghost" style="color: white; border-color: rgba(255,255,255,0.3);" data-modal-open="qr-modal">📷 Scan QR</button>
+          </div>
+        </div>
+        <div style="text-align: center; position: relative; z-index: 2;">
+          <img src="https://images.unsplash.com/photo-1556742111-a301076d9d18?w=500&q=80" alt="Phone showing banking app" style="max-width: 320px; margin: 0 auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl);" loading="lazy">
+        </div>
+        <!-- Decorative tan circle -->
+        <div style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, var(--color-tan) 0%, transparent 70%); opacity: 0.3; border-radius: 50%; top: -100px; right: -100px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LATEST NEWS — three news cards w/ external links
+       ============================================================ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">From our newsroom</span>
+        <h2>Stories, news, and a little wisdom</h2>
+      </div>
+
+      <div class="grid grid--3">
+        <article class="card reveal">
+          <span class="badge">Press</span>
+          <h4 style="margin: var(--space-sm) 0;">Megagankybank named “Most Loved Bank” for 3rd year</h4>
+          <p>Forbes 2026 list ranks us #1 in customer experience across all U.S. regional banks.</p>
+          <a href="https://www.forbes.com" target="_blank" rel="noopener" class="card-link">Read on Forbes ↗</a>
+        </article>
+
+        <article class="card reveal">
+          <span class="badge badge--success">Update</span>
+          <h4 style="margin: var(--space-sm) 0;">New 4.5% APY on Tan Savings — automatic for all members</h4>
+          <p>Effective immediately. No re-application required. The highest yield in our 20-year history.</p>
+          <a href="#" class="card-link">Read announcement →</a>
+        </article>
+
+        <article class="card reveal">
+          <span class="badge badge--warning">Tip</span>
+          <h4 style="margin: var(--space-sm) 0;">Five money habits to start this month</h4>
+          <p>Our financial educators share simple, science-backed routines that make a real difference.</p>
+          <a href="#" class="card-link">Read article →</a>
+        </article>
+      </div>
+
+      <div class="text-center mt-xl">
+        <a href="#" class="btn btn--secondary">Browse all articles →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MODAL — triggered by the "Scan QR" button above
+       ============================================================ -->
+  <div class="modal-backdrop" id="qr-modal">
+    <div class="modal">
+      <button class="modal-close" aria-label="Close">×</button>
+      <h3>Scan with your camera</h3>
+      <p>Point your phone camera at the code below to download the Megagankybank app instantly.</p>
+      <!-- Inline SVG "QR code" placeholder — just a decorative pattern -->
+      <div style="text-align: center; padding: var(--space-md); background: var(--color-cream); border-radius: var(--radius-md);">
+        <svg width="180" height="180" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" fill="white"/>
+          <g fill="#3B2C1A">
+            <rect x="5" y="5" width="20" height="20"/>
+            <rect x="10" y="10" width="10" height="10" fill="white"/>
+            <rect x="75" y="5" width="20" height="20"/>
+            <rect x="80" y="10" width="10" height="10" fill="white"/>
+            <rect x="5" y="75" width="20" height="20"/>
+            <rect x="10" y="80" width="10" height="10" fill="white"/>
+            <rect x="35" y="5" width="5" height="5"/>
+            <rect x="45" y="5" width="5" height="5"/>
+            <rect x="55" y="5" width="5" height="5"/>
+            <rect x="35" y="15" width="5" height="5"/>
+            <rect x="55" y="15" width="5" height="5"/>
+            <rect x="65" y="15" width="5" height="5"/>
+            <rect x="5" y="35" width="5" height="5"/>
+            <rect x="15" y="35" width="5" height="5"/>
+            <rect x="25" y="35" width="5" height="5"/>
+            <rect x="35" y="35" width="10" height="10"/>
+            <rect x="55" y="35" width="5" height="5"/>
+            <rect x="65" y="35" width="10" height="10"/>
+            <rect x="85" y="35" width="5" height="5"/>
+            <rect x="5" y="55" width="10" height="10"/>
+            <rect x="25" y="55" width="5" height="5"/>
+            <rect x="35" y="55" width="5" height="5"/>
+            <rect x="50" y="55" width="10" height="10"/>
+            <rect x="70" y="55" width="5" height="5"/>
+            <rect x="80" y="55" width="10" height="10"/>
+            <rect x="35" y="75" width="5" height="5"/>
+            <rect x="45" y="75" width="5" height="5"/>
+            <rect x="55" y="75" width="5" height="5"/>
+            <rect x="65" y="75" width="5" height="5"/>
+            <rect x="35" y="85" width="5" height="5"/>
+            <rect x="50" y="85" width="5" height="5"/>
+            <rect x="65" y="85" width="5" height="5"/>
+            <rect x="80" y="85" width="5" height="5"/>
+          </g>
+        </svg>
+      </div>
+      <button class="btn btn--primary btn--block mt-md" data-modal-close>Got it</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FOOTER — links, newsletter, social, legal
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="nav-brand" style="color: var(--color-tan);">
+            <span class="nav-brand-logo">M</span>
+            Megagankybank
+          </div>
+          <p>Banking that finally feels like home. Member FDIC. Equal Housing Lender.</p>
+          <div class="footer-social mt-md">
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Bank</h4>
+          <ul>
+            <li><a href="services.html#checking">Checking</a></li>
+            <li><a href="services.html#savings">Savings</a></li>
+            <li><a href="services.html#cards">Credit Cards</a></li>
+            <li><a href="loans.html">Loans</a></li>
+            <li><a href="services.html#investing">Investing</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="about.html#leadership">Leadership</a></li>
+            <li><a href="about.html#careers">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Investor relations</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="contact.html#faq">FAQ</a></li>
+            <li><a href="#">Security center</a></li>
+            <li><a href="#">Find a branch</a></li>
+            <li><a href="#">Report fraud</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col footer-newsletter">
+          <h4>Get our weekly money tips</h4>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Short, useful, and we promise we'll never sell your email.</p>
+          <form>
+            <input type="email" placeholder="you@email.com" required>
+            <button type="submit" class="btn btn--tan btn--sm">Join</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Ahoura's Megagankybank, N.A. All rights reserved. This is a demo site — not a real bank.</span>
+        <div class="flex gap-md">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

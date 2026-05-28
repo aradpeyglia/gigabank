@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<!--
+  about.html — The story behind Ahoura's Megagankybank
+  ---------------------------------------------------------------
+  Section list:
+    1. Sticky header (re-used from index)
+    2. Page hero with breadcrumbs
+    3. Mission statement (two-col with image)
+    4. Values grid (4 cards)
+    5. Timeline (animated vertical history)
+    6. Leadership team (image cards)
+    7. Numbers / impact stats
+    8. Video embed (placeholder) with toggleable description
+    9. Careers CTA
+   10. Footer
+-->
+<html lang="en">
+<head>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Ahoura's Megagankybank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+  <style>
+    /* Page-specific styles — kept inline because they're only used here     */
+
+    /* Timeline — a vertical line with circles down the middle               */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: var(--space-xl) auto;
+      padding: var(--space-lg) 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 2px;
+      background-color: var(--color-border);
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      position: relative;
+      width: 50%;
+      padding: var(--space-md) var(--space-lg);
+    }
+    .timeline-item:nth-child(odd)  { left: 0;  text-align: right; }
+    .timeline-item:nth-child(even) { left: 50%; text-align: left; }
+    .timeline-dot {
+      position: absolute;
+      top: 24px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: var(--color-tan);
+      border: 3px solid var(--color-bg);
+    }
+    .timeline-item:nth-child(odd)  .timeline-dot { right: -8px; }
+    .timeline-item:nth-child(even) .timeline-dot { left: -8px; }
+
+    .timeline-year {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      color: var(--color-brown);
+      font-weight: 700;
+    }
+    .timeline-item h4 {
+      margin: 4px 0;
+    }
+    .timeline-item p {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+    @media (max-width: 720px) {
+      .timeline::before { left: 16px; }
+      .timeline-item, .timeline-item:nth-child(even) {
+        width: 100%; left: 0; text-align: left; padding-left: 48px;
+      }
+      .timeline-item .timeline-dot { left: 8px !important; right: auto !important; }
+    }
+
+    /* Team cards with rounded portraits */
+    .team-card {
+      text-align: center;
+    }
+    .team-card img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto var(--space-md);
+      box-shadow: var(--shadow-md);
+      border: 4px solid var(--color-white);
+    }
+    .team-card .role {
+      color: var(--color-tan-dark);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================ HEADER -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html">Services ▾</a>
+          <div class="nav-dropdown-menu">
+            <a href="services.html#checking">Checking Accounts</a>
+            <a href="services.html#savings">Savings & CDs</a>
+            <a href="services.html#cards">Credit Cards</a>
+            <a href="services.html#investing">Investing</a>
+            <a href="services.html#business">Business Banking</a>
+          </div>
+        </li>
+        <li><a href="loans.html">Loans</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn--ghost btn--sm">Sign in</a>
+        <a href="services.html" class="btn btn--primary btn--sm">Open Account</a>
+        <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>We're a bank, but we're also <em style="color: var(--color-brown); font-style:normal;">your neighbor.</em></h1>
+      <p>Founded in 2006 in a small Berkeley storefront. Today, 247 branches, 2.4 million customers, and the same warm welcome we started with.</p>
+      <ol class="breadcrumb">
+        <li><a href="index.html">Home</a></li>
+        <li>About</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ MISSION -->
+  <section class="section">
+    <div class="container grid grid--2" style="align-items: center;">
+      <div class="reveal">
+        <span class="eyebrow" style="color: var(--color-tan-dark); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;">Our Mission</span>
+        <h2 style="margin: var(--space-sm) 0 var(--space-md);">Make money less stressful for everyone.</h2>
+        <p style="color: var(--color-text-muted); margin-bottom: var(--space-md);">
+          Big banks treat customers like account numbers. We don't. Every member
+          of Megagankybank gets a real person on the phone, transparent rates, and
+          tools that actually help — not gimmicks that drain your wallet.
+        </p>
+        <p style="color: var(--color-text-muted); margin-bottom: var(--space-lg);">
+          Twenty years in, we still send a handwritten card to every new account
+          holder. Some traditions are worth keeping.
+        </p>
+        <div class="flex gap-md flex-wrap">
+          <a href="#timeline" class="btn btn--primary">Read our history</a>
+          <a href="contact.html" class="btn btn--secondary">Visit a branch</a>
+        </div>
+      </div>
+      <div class="reveal">
+        <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80" alt="Friendly team meeting at a wooden table" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ VALUES -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Our Values</span>
+        <h2>Four things we'll never compromise on</h2>
+      </div>
+      <div class="grid grid--4">
+        <div class="card reveal">
+          <div class="card-icon">🤝</div>
+          <h3>Honesty</h3>
+          <p>No hidden fees, no fine print. If you can't understand it on the first read, we'll rewrite it.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-icon">🛡️</div>
+          <h3>Security</h3>
+          <p>FDIC-insured, bank-grade encryption, and 24/7 fraud monitoring on every account.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-icon">🌱</div>
+          <h3>Community</h3>
+          <p>1% of profits funds local non-profits chosen by you, our members, every year.</p>
+        </div>
+        <div class="card reveal">
+          <div class="card-icon">💡</div>
+          <h3>Innovation</h3>
+          <p>We're old-school in our values, brand-new in our tech. Our app reviews speak for themselves.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ TIMELINE -->
+  <section class="section" id="timeline">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Our Story</span>
+        <h2>Twenty years, one promise</h2>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2006</div>
+          <h4>The first branch opens</h4>
+          <p>Ahoura cashes in his savings and rents a 400 sq ft storefront on Telegraph Avenue.</p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2009</div>
+          <h4>First 1,000 customers</h4>
+          <p>Through the 2008 crisis, we never charged a single late fee. Word got around.</p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2013</div>
+          <h4>Launched the mobile app</h4>
+          <p>One of the first regional banks with mobile check deposit. It was a big deal back then.</p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2018</div>
+          <h4>100 branches strong</h4>
+          <p>Expansion across the West Coast. Every branch still gets a fresh-baked cookie tray.</p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2022</div>
+          <h4>Crossed 1M customers</h4>
+          <p>Named "Most Loved Bank" by Forbes for the first of three (and counting) years.</p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2026</div>
+          <h4>2.4M members, 247 branches</h4>
+          <p>And we still answer the phone on the second ring.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ TEAM -->
+  <section class="section section--alt" id="leadership">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Meet the team</span>
+        <h2>Leadership that actually listens</h2>
+      </div>
+
+      <div class="grid grid--4">
+        <div class="card team-card reveal">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80" alt="CEO portrait" loading="lazy">
+          <span class="role">Founder & CEO</span>
+          <h4 style="margin: 4px 0;">Ahoura Radpey</h4>
+          <p style="font-size: 0.9rem;">"I started this bank because mine treated me badly. Twenty years later, the mission hasn't changed."</p>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="card-link">Connect on LinkedIn ↗</a>
+        </div>
+        <div class="card team-card reveal">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" alt="CFO portrait" loading="lazy">
+          <span class="role">CFO</span>
+          <h4 style="margin: 4px 0;">Lila Chen</h4>
+          <p style="font-size: 0.9rem;">Former Goldman analyst who left to "do something honest." She runs our books with rare clarity.</p>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="card-link">Connect on LinkedIn ↗</a>
+        </div>
+        <div class="card team-card reveal">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="CTO portrait" loading="lazy">
+          <span class="role">CTO</span>
+          <h4 style="margin: 4px 0;">Marcus Park</h4>
+          <p style="font-size: 0.9rem;">Built our mobile app from scratch in a Tuesday-night meetup group. Now it has 4.9 stars.</p>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="card-link">Connect on LinkedIn ↗</a>
+        </div>
+        <div class="card team-card reveal">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80" alt="Head of Customer portrait" loading="lazy">
+          <span class="role">Head of Customer</span>
+          <h4 style="margin: 4px 0;">Priya Nair</h4>
+          <p style="font-size: 0.9rem;">Personally writes every quarterly customer letter. Reads every reply. Yes, really.</p>
+          <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="card-link">Connect on LinkedIn ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ IMPACT STATS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Our Impact</span>
+        <h2>The numbers we're proudest of</h2>
+      </div>
+      <div class="stats-bar">
+        <div class="stat">
+          <span class="stat-number" data-counter="124" data-prefix="$" data-suffix="M">0</span>
+          <span class="stat-label">Donated to community</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-counter="0" data-suffix=" hidden fees">0</span>
+          <span class="stat-label">Charged, ever</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-counter="98" data-suffix="%">0</span>
+          <span class="stat-label">Customer retention</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-counter="32" data-suffix=" sec">0</span>
+          <span class="stat-label">Avg. wait to a human</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ VIDEO -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Watch our story</span>
+        <h2>Three minutes, twenty years</h2>
+      </div>
+      <div class="reveal" style="max-width: 900px; margin: 0 auto; border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xl); aspect-ratio: 16 / 9;">
+        <!-- Embedded YouTube video placeholder — uses a known sample video -->
+        <iframe
+          width="100%" height="100%"
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          title="Megagankybank story"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          style="display: block;"
+        ></iframe>
+      </div>
+      <p class="text-center text-muted mt-md">Subtitles available in 12 languages.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ CAREERS CTA -->
+  <section class="section" id="careers">
+    <div class="container">
+      <div class="reveal" style="background: linear-gradient(135deg, var(--color-cream), var(--color-tan)); border-radius: var(--radius-xl); padding: var(--space-2xl); text-align: center;">
+        <h2 style="margin-bottom: var(--space-md);">Come build with us</h2>
+        <p style="color: var(--color-brown-dark); max-width: 600px; margin: 0 auto var(--space-lg);">
+          We're hiring across engineering, design, branch operations, and customer support — in 14 cities and remote.
+        </p>
+        <div class="flex gap-md flex-wrap" style="justify-content: center;">
+          <a href="https://www.linkedin.com/jobs" target="_blank" rel="noopener" class="btn btn--primary btn--lg">See open roles ↗</a>
+          <a href="contact.html" class="btn btn--secondary btn--lg">Talk to recruiting</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="nav-brand" style="color: var(--color-tan);"><span class="nav-brand-logo">M</span>Megagankybank</div>
+          <p>Banking that finally feels like home. Member FDIC. Equal Housing Lender.</p>
+          <div class="footer-social mt-md">
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Bank</h4>
+          <ul>
+            <li><a href="services.html#checking">Checking</a></li>
+            <li><a href="services.html#savings">Savings</a></li>
+            <li><a href="services.html#cards">Credit Cards</a></li>
+            <li><a href="loans.html">Loans</a></li>
+            <li><a href="services.html#investing">Investing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="about.html#leadership">Leadership</a></li>
+            <li><a href="about.html#careers">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Investor relations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="contact.html#faq">FAQ</a></li>
+            <li><a href="#">Security center</a></li>
+            <li><a href="#">Find a branch</a></li>
+            <li><a href="#">Report fraud</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-newsletter">
+          <h4>Get our weekly money tips</h4>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Short, useful, and we promise we'll never sell your email.</p>
+          <form>
+            <input type="email" placeholder="you@email.com" required>
+            <button type="submit" class="btn btn--tan btn--sm">Join</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Ahoura's Megagankybank, N.A. All rights reserved. This is a demo site — not a real bank.</span>
+        <div class="flex gap-md">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

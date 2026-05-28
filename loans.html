@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<!--
+  loans.html — Loans landing page
+  ---------------------------------------------------------------
+  Sections:
+    1. Header
+    2. Page hero with breadcrumb
+    3. Loan calculator (sliders → live monthly payment)
+    4. Loan type tabs (Home / Auto / Personal / Student)
+    5. Rate comparison table
+    6. Process timeline (3 steps with icons)
+    7. Customer story carousel
+    8. FAQ accordion
+    9. CTA banner
+   10. Footer
+-->
+<html lang="en">
+<head>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loans — Ahoura's Megagankybank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+  <style>
+    /* Calculator-specific layout — a card with the form on the left and    */
+    /* the results panel on the right.                                      */
+    .calc {
+      background-color: var(--color-white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+    }
+    .calc-form {
+      padding: var(--space-xl);
+    }
+    .calc-result {
+      background: linear-gradient(135deg, var(--color-brown-dark), var(--color-brown));
+      color: var(--color-white);
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .calc-result::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--color-tan) 0%, transparent 70%);
+      opacity: 0.25;
+      border-radius: 50%;
+      top: -100px;
+      right: -100px;
+    }
+    .calc-result h3 { color: var(--color-tan); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .calc-result .big {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .calc-result-row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.15); position: relative; z-index: 2; }
+    .calc-result-row:first-of-type { border-top: none; }
+
+    /* Range slider styling override for a tan/brown thumb                  */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--color-cream);
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--color-brown);
+      cursor: pointer;
+      border: 3px solid var(--color-white);
+      box-shadow: var(--shadow-md);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--color-brown);
+      cursor: pointer;
+      border: 3px solid var(--color-white);
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .slider-label strong { color: var(--color-brown-dark); font-family: var(--font-serif); }
+
+    /* Process steps — three horizontal cards with numbered icons */
+    .process-step {
+      text-align: center;
+      padding: var(--space-lg);
+    }
+    .process-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-tan), var(--color-brown));
+      color: white;
+      display: grid; place-items: center;
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 auto var(--space-md);
+    }
+    @media (max-width: 720px) {
+      .calc { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================ HEADER -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li class="nav-dropdown">
+          <a href="services.html">Services ▾</a>
+          <div class="nav-dropdown-menu">
+            <a href="services.html#checking">Checking Accounts</a>
+            <a href="services.html#savings">Savings & CDs</a>
+            <a href="services.html#cards">Credit Cards</a>
+            <a href="services.html#investing">Investing</a>
+            <a href="services.html#business">Business Banking</a>
+          </div>
+        </li>
+        <li><a href="loans.html">Loans</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn--ghost btn--sm">Sign in</a>
+        <a href="services.html" class="btn btn--primary btn--sm">Open Account</a>
+        <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>Loans built around <em style="color: var(--color-brown); font-style:normal;">your life.</em></h1>
+      <p>Transparent rates, fast approvals, and a loan officer who picks up the phone. Estimate your payment in seconds.</p>
+      <ol class="breadcrumb">
+        <li><a href="index.html">Home</a></li>
+        <li>Loans</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ CALCULATOR -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Loan calculator</span>
+        <h2>See your estimated monthly payment</h2>
+        <p>Drag the sliders. The math updates in real time.</p>
+      </div>
+
+      <form id="loan-calc" class="calc reveal">
+        <div class="calc-form">
+          <div class="form-group">
+            <div class="slider-label">
+              <span>Loan amount</span>
+              <strong id="calc-amount-out">$300,000</strong>
+            </div>
+            <input type="range" name="amount" min="5000" max="1000000" step="5000" value="300000">
+            <div class="form-helper">From $5,000 up to $1,000,000.</div>
+          </div>
+
+          <div class="form-group">
+            <div class="slider-label">
+              <span>Interest rate</span>
+              <strong id="calc-rate-out">6.25%</strong>
+            </div>
+            <input type="range" name="rate" min="3" max="15" step="0.05" value="6.25">
+            <div class="form-helper">Rates from 3.00% to 15.00% (illustrative only).</div>
+          </div>
+
+          <div class="form-group">
+            <div class="slider-label">
+              <span>Term</span>
+              <strong id="calc-term-out">30 yrs</strong>
+            </div>
+            <input type="range" name="term" min="5" max="30" step="1" value="30">
+            <div class="form-helper">Choose a repayment term between 5 and 30 years.</div>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--block mt-md">Apply with these terms →</button>
+          <p class="form-helper text-center mt-md">Numbers are estimates. Real rates depend on credit & DTI.</p>
+        </div>
+
+        <!-- Result panel — brown gradient + tan accents -->
+        <div class="calc-result">
+          <div>
+            <h3>Estimated monthly payment</h3>
+            <div class="big" id="calc-monthly">$1,847.15</div>
+          </div>
+          <div>
+            <div class="calc-result-row"><span>Total paid over term</span><strong id="calc-total">$664,974.00</strong></div>
+            <div class="calc-result-row"><span>Total interest paid</span><strong id="calc-interest">$364,974.00</strong></div>
+            <div class="calc-result-row"><span>Loan-to-value</span><strong>≤ 80% recommended</strong></div>
+          </div>
+          <a href="login.html" class="btn btn--tan">Pre-qualify in 90 sec ↗</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================================ LOAN TYPE TABS -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Choose your loan</span>
+        <h2>We've got a fit for every milestone</h2>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="home">🏠 Home</button>
+        <button class="tab" data-tab="auto">🚗 Auto</button>
+        <button class="tab" data-tab="personal">💵 Personal</button>
+        <button class="tab" data-tab="student">🎓 Student Refi</button>
+      </div>
+
+      <div class="tab-panel active" data-panel="home">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>Mortgages from 6.25% APR</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              Fixed-rate and adjustable-rate mortgages for first-time buyers,
+              refinancers, and investment properties. No origination fee for
+              members in good standing.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+              <li>✓ 10, 15, 20, and 30-year terms</li>
+              <li>✓ Down payments as low as 3%</li>
+              <li>✓ Online pre-approval in under 5 minutes</li>
+              <li>✓ Local loan officers, no call-center handoffs</li>
+            </ul>
+            <a href="#" class="btn btn--primary mt-md">Get pre-approved</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80" alt="Modern house at dusk" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="auto">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>Auto loans from 5.49% APR</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              New, used, refi — all at the same honest rate. Skip the dealer markup, get a check before you walk on the lot.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+              <li>✓ Pre-approval valid for 60 days</li>
+              <li>✓ No prepayment penalty</li>
+              <li>✓ Rate discount for autopay (-0.25%)</li>
+              <li>✓ Works at any dealer nationwide</li>
+            </ul>
+            <a href="#" class="btn btn--primary mt-md">Apply for auto loan</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80" alt="New car on the road" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="personal">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>Personal loans from 7.99% APR</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              Consolidate debt, fund a home project, or cover an unexpected expense. No collateral, fixed rates, predictable payments.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+              <li>✓ $1,000 to $50,000</li>
+              <li>✓ 2 to 7 year terms</li>
+              <li>✓ Funds in your account next business day</li>
+              <li>✓ No hidden fees, ever</li>
+            </ul>
+            <a href="#" class="btn btn--primary mt-md">Check my rate</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&q=80" alt="Calculator on a desk" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="student">
+        <div class="grid grid--2" style="align-items: center;">
+          <div>
+            <h3>Student loan refi from 4.99% APR</h3>
+            <p style="color: var(--color-text-muted); margin: var(--space-md) 0;">
+              Consolidate your federal & private student loans into one payment with a lower rate. Average customer saves $312/month.
+            </p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+              <li>✓ Variable & fixed-rate options</li>
+              <li>✓ 5, 7, 10, 15, 20-year terms</li>
+              <li>✓ Soft credit check — no impact on score</li>
+              <li>✓ Career-loss forbearance built in</li>
+            </ul>
+            <a href="#" class="btn btn--primary mt-md">See my savings</a>
+          </div>
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=80" alt="Student with laptop" style="border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ COMPARISON TABLE -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">At a glance</span>
+        <h2>Compare our loan products</h2>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Loan</th>
+              <th>Starting APR</th>
+              <th>Range</th>
+              <th>Terms</th>
+              <th>Funding time</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Home Mortgage</strong><div class="text-muted" style="font-size:0.8rem;">Fixed or ARM</div></td>
+              <td><span class="badge badge--success">6.25%</span></td>
+              <td>$50K – $3M</td>
+              <td>10–30 yrs</td>
+              <td>~25 days</td>
+              <td><a href="#" class="btn btn--ghost btn--sm">Apply</a></td>
+            </tr>
+            <tr>
+              <td><strong>Auto Loan</strong><div class="text-muted" style="font-size:0.8rem;">New, used, refi</div></td>
+              <td><span class="badge badge--success">5.49%</span></td>
+              <td>$5K – $150K</td>
+              <td>2–7 yrs</td>
+              <td>1 business day</td>
+              <td><a href="#" class="btn btn--ghost btn--sm">Apply</a></td>
+            </tr>
+            <tr>
+              <td><strong>Personal Loan</strong><div class="text-muted" style="font-size:0.8rem;">Unsecured</div></td>
+              <td><span class="badge badge--warning">7.99%</span></td>
+              <td>$1K – $50K</td>
+              <td>2–7 yrs</td>
+              <td>Next day</td>
+              <td><a href="#" class="btn btn--ghost btn--sm">Apply</a></td>
+            </tr>
+            <tr>
+              <td><strong>Student Refi</strong><div class="text-muted" style="font-size:0.8rem;">Fixed or variable</div></td>
+              <td><span class="badge badge--success">4.99%</span></td>
+              <td>$5K – $500K</td>
+              <td>5–20 yrs</td>
+              <td>~14 days</td>
+              <td><a href="#" class="btn btn--ghost btn--sm">Apply</a></td>
+            </tr>
+            <tr>
+              <td><strong>HELOC</strong><div class="text-muted" style="font-size:0.8rem;">Variable</div></td>
+              <td><span class="badge badge--warning">8.25%</span></td>
+              <td>$25K – $500K</td>
+              <td>10-yr draw</td>
+              <td>~20 days</td>
+              <td><a href="#" class="btn btn--ghost btn--sm">Apply</a></td>
+            </tr>
+            <tr>
+              <td><strong>Small Business Loan</strong><div class="text-muted" style="font-size:0.8rem;">SBA 7(a) preferred</div></td>
+              <td><span class="badge">From 7.50%</span></td>
+              <td>$10K – $5M</td>
+              <td>3–25 yrs</td>
+              <td>30–60 days</td>
+              <td><a href="services.html#business" class="btn btn--ghost btn--sm">Learn</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-muted text-center mt-md" style="font-size: 0.85rem;">
+        Rates current as of today. <span class="tooltip" data-tooltip="APR includes interest + standard fees. Your actual rate depends on creditworthiness.">What's APR?</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ PROCESS -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">How it works</span>
+        <h2>Three steps to funded</h2>
+      </div>
+      <div class="grid grid--3">
+        <div class="card process-step reveal">
+          <div class="process-num">1</div>
+          <h3>Tell us about you</h3>
+          <p>A 90-second form with no hard credit check. We give you a real rate, not a teaser.</p>
+        </div>
+        <div class="card process-step reveal">
+          <div class="process-num">2</div>
+          <h3>Upload documents</h3>
+          <p>Pay stubs, tax returns, ID. All securely encrypted and reviewed by a human, not an algorithm.</p>
+        </div>
+        <div class="card process-step reveal">
+          <div class="process-num">3</div>
+          <h3>Get funded</h3>
+          <p>Sign electronically and watch the funds land. Most loans close in two weeks or less.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ STORIES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Customer stories</span>
+        <h2>Real loans, real lives</h2>
+      </div>
+      <div class="carousel reveal" data-autoplay="7000">
+        <div class="carousel-track">
+          <div class="carousel-slide">
+            <blockquote>"I closed on my first house at 26. The Megagankybank team walked me through every step and saved me about $9k in fees vs the big bank quote."</blockquote>
+            <cite>— Sara K. · Home loan · Portland, OR</cite>
+          </div>
+          <div class="carousel-slide">
+            <blockquote>"I refinanced $42,000 of student loans and dropped my rate from 10.4% to 5.1%. I'll pay them off years sooner now."</blockquote>
+            <cite>— Jacob M. · Student refi · Chicago, IL</cite>
+          </div>
+          <div class="carousel-slide">
+            <blockquote>"Our small bakery needed a $75k expansion loan and had been turned down twice. Megagankybank approved us in 3 weeks. We just opened our second location."</blockquote>
+            <cite>— Theo & Anna · Small business loan · Oakland, CA</cite>
+          </div>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-btn prev" aria-label="Previous">‹</button>
+          <div class="carousel-dots"></div>
+          <button class="carousel-btn next" aria-label="Next">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ FAQ ACCORDION -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>Loan questions, answered</h2>
+      </div>
+      <!-- data-single makes only one item stay open at a time -->
+      <div class="accordion reveal" data-single="true" style="max-width: 800px; margin: 0 auto;">
+        <div class="accordion-item">
+          <button class="accordion-header">
+            What credit score do I need to qualify?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            We've approved customers with scores as low as 580 for personal loans, and 620+ for mortgages. We look at the full picture — income stability, DTI, and history with us — not just a number.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-header">
+            Will checking my rate hurt my credit score?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            No. Our pre-qualification uses a soft credit pull which has zero impact on your score. A hard pull only happens if you accept your final offer and move forward with the loan.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-header">
+            How long does it take to get funded?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            Personal loans fund as fast as the next business day. Auto loans average 24–48 hours. Mortgages typically close in 21–25 days, depending on the property and appraisal timing.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-header">
+            Are there any hidden fees?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            No. Zero origination, prepayment, or "processing" fees on personal and auto loans. Mortgages have standard third-party closing costs (appraisal, title, etc.) that we disclose up front, in full, on day one.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-header">
+            Can I pay off my loan early?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            Always, with no penalty. In fact, we have a one-tap "Pay extra" button in the app and a "Round up to the nearest $50" autopay option that quietly speeds up your payoff.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-header">
+            What if I lose my job?
+            <span class="accordion-icon">+</span>
+          </button>
+          <div class="accordion-body">
+            We offer up to 3 months of forbearance on most loan types for verified income loss. Reach out to your loan officer and we'll work something out. We're human.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="reveal" style="background: linear-gradient(135deg, var(--color-tan), var(--color-brown)); color: white; border-radius: var(--radius-xl); padding: var(--space-2xl); text-align: center;">
+        <h2 style="color: white;">Ready to start your application?</h2>
+        <p style="opacity: 0.95; max-width: 540px; margin: var(--space-md) auto var(--space-lg);">90 seconds to see your real rate. No commitment.</p>
+        <div class="flex gap-md flex-wrap" style="justify-content: center;">
+          <a href="login.html" class="btn btn--ghost" style="color: white; border-color: white; background: white; color: var(--color-brown-dark);">Sign in to apply</a>
+          <a href="contact.html" class="btn btn--ghost" style="color: white; border-color: white;">Talk to a loan officer</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="nav-brand" style="color: var(--color-tan);"><span class="nav-brand-logo">M</span>Megagankybank</div>
+          <p>Banking that finally feels like home. Member FDIC. Equal Housing Lender.</p>
+          <div class="footer-social mt-md">
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Bank</h4>
+          <ul>
+            <li><a href="services.html#checking">Checking</a></li>
+            <li><a href="services.html#savings">Savings</a></li>
+            <li><a href="services.html#cards">Credit Cards</a></li>
+            <li><a href="loans.html">Loans</a></li>
+            <li><a href="services.html#investing">Investing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About us</a></li>
+            <li><a href="about.html#leadership">Leadership</a></li>
+            <li><a href="about.html#careers">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Investor relations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="contact.html">Contact us</a></li>
+            <li><a href="contact.html#faq">FAQ</a></li>
+            <li><a href="#">Security center</a></li>
+            <li><a href="#">Find a branch</a></li>
+            <li><a href="#">Report fraud</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-newsletter">
+          <h4>Get our weekly money tips</h4>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Short, useful, and we promise we'll never sell your email.</p>
+          <form>
+            <input type="email" placeholder="you@email.com" required>
+            <button type="submit" class="btn btn--tan btn--sm">Join</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Ahoura's Megagankybank, N.A. All rights reserved. This is a demo site — not a real bank.</span>
+        <div class="flex gap-md">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/loans.js"></script>
+</body>
+</html>
