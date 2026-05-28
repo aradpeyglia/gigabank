@@ -152,19 +152,23 @@ a working signup/login backed by a spreadsheet you control.
 2. Enter the email + password you put in row 2 of the Sheet.
 3. You should land on the dashboard. 🎉
 
-### (Optional) Create new accounts from the site
+### Creating new accounts from the site
 
-`auth.js` already knows how to call the `signup` action of the Apps Script.
-The Apps Script's `handleSignup` will:
+The login page has a built-in **"Create one in 30 seconds →"** link below
+the sign-in button. Click it to flip the form into signup mode (full name,
+email, password, confirm password, terms checkbox). When you submit:
 
-- Check the email doesn't already exist
-- Auto-generate an `accountId` (`MGB-0023`, etc.)
-- Seed `balance` to `0`
-- Append the row
+1. `auth.js` POSTs `{action: 'signup', name, email, password}` to your Apps Script
+2. `handleSignup` checks the email isn't already taken
+3. Auto-generates an `accountId` (e.g. `MGB-0023`)
+4. Seeds `balance` to `0`
+5. Appends a new row to your Users sheet
+6. Returns the new user back to the client, which auto-logs them in and
+   redirects to the dashboard
 
-You'd just need to add a tiny "Create account" form to `login.html` that
-POSTs `{action: 'signup', name, email, password}` instead of `login`.
-That's left out by default because the brief only required login validation.
+In demo mode (before you configure the Sheet) it still works — the new
+user is stored in memory on the page so you can verify the flow, though
+it'll reset on refresh.
 
 ### Re-deploying after changes to the script
 

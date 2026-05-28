@@ -24,7 +24,7 @@
    It will look like:
    https://script.google.com/macros/s/AKfycby.................../exec
    ========================================================================= */
-const SHEETS_API_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbxPyfej86SXABravRee4_qiPdTVYGSTi2OfGID_xKptiNTHadylIfgHSxvVThKi0CNmOw/exec';
 
 /* If SHEETS_API_URL is left unset we fall back to a built-in DEMO mode so
    the site still "works" on GitHub Pages without any backend. The demo
@@ -75,11 +75,20 @@ window.MGBAuth = { getSession, clearSession, saveSession };
 
 
 /* =========================================================================
+   isBackendConfigured — true once the user has pasted a real Apps Script
+   URL into SHEETS_API_URL. We use it in a few places to decide whether to
+   hit the network or fall back to local demo mode.
+   ========================================================================= */
+function isBackendConfigured() {
+  return SHEETS_API_URL && !SHEETS_API_URL.startsWith('PASTE_');
+}
+
+
+/* =========================================================================
    LOGIN — talk to the Apps Script (or fall back to demo)
    ========================================================================= */
 async function login(email, password) {
-  // No backend configured? Use the local demo array
-  if (!SHEETS_API_URL || SHEETS_API_URL.startsWith('PASTE_')) {
+  if (!isBackendConfigured()) {
     return demoLogin(email, password);
   }
 
@@ -119,6 +128,58 @@ function demoLogin(email, password) {
       } else {
         resolve({ ok: false, error: 'Invalid email or password.' });
       }
+    }, 700);
+  });
+}
+
+
+/* =========================================================================
+   SIGNUP — create a new account. Calls the Apps Script's `signup` action
+   which appends a row to the Users sheet and returns the new user record.
+   In demo mode it just pushes to the in-memory DEMO_USERS array (which
+   resets on page reload — but it's enough to verify the UX).
+   ========================================================================= */
+async function signup(name, email, password) {
+  if (!isBackendConfigured()) {
+    return demoSignup(name, email, password);
+  }
+
+  try {
+    const formBody = new URLSearchParams();
+    formBody.append('action', 'signup');
+    formBody.append('name', name);
+    formBody.append('email', email);
+    formBody.append('password', password);
+
+    const res = await fetch(SHEETS_API_URL, {
+      method: 'POST',
+      body: formBody,
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error('Signup request failed:', err);
+    return { ok: false, error: 'Network error. Please try again.' };
+  }
+}
+
+function demoSignup(name, email, password) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Reject duplicates so the UX matches the real backend
+      const exists = DEMO_USERS.some(
+        (u) => u.email.toLowerCase() === email.toLowerCase()
+      );
+      if (exists) {
+        resolve({ ok: false, error: 'An account with that email already exists.' });
+        return;
+      }
+      // Auto-generate a new account ID in the MGB-XXXX format
+      const newId = 'MGB-' + String(DEMO_USERS.length + 1).padStart(4, '0') + '-DEMO';
+      const newUser = { name, email, accountId: newId, balance: 0 };
+      DEMO_USERS.push({ ...newUser, password });   // remember in-memory
+      resolve({ ok: true, user: newUser });
     }, 700);
   });
 }
@@ -182,4 +243,96 @@ document.addEventListener('DOMContentLoaded', () => {
       window.toast('Demo credentials filled in.', '');
     });
   }
+});
+
+
+/* =========================================================================
+   AUTH VIEW TOGGLE — flip between #auth-view-login and #auth-view-signup
+   when the user clicks an .auth-toggle link. Two separate forms keep
+   their own state cleanly without us having to micro-manage attributes.
+   ========================================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const loginView  = document.getElementById('auth-view-login');
+  const signupView = document.getElementById('auth-view-signup');
+  if (!loginView || !signupView) return;
+
+  document.querySelectorAll('.auth-toggle').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const wantSignup = link.dataset.view === 'signup';
+      loginView.classList.toggle('hidden', wantSignup);
+      signupView.classList.toggle('hidden', !wantSignup);
+
+      // Update the page title for a polished touch
+      document.title = (wantSignup ? 'Create account' : 'Sign In')
+        + " — Ahoura's Megagankybank";
+    });
+  });
+});
+
+
+/* =========================================================================
+   SIGNUP FORM WIRING — only runs if a #signup-form exists on the page.
+   On success we save the session and redirect straight to the dashboard
+   (auto-login UX — saves the new user a second step).
+   ========================================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('signup-form');
+  if (!form) return;
+
+  const nameInput     = form.querySelector('[name="name"]');
+  const emailInput    = form.querySelector('[name="email"]');
+  const passwordInput = form.querySelector('[name="password"]');
+  const confirmInput  = form.querySelector('[name="confirm"]');
+  const termsInput    = form.querySelector('[name="terms"]');
+  const submitBtn     = form.querySelector('[type="submit"]');
+  const errorBox      = form.querySelector('.form-error');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.classList.remove('show');
+    errorBox.textContent = '';
+
+    // Pull values for validation
+    const name     = nameInput.value.trim();
+    const email    = emailInput.value.trim();
+    const password = passwordInput.value;
+    const confirm  = confirmInput.value;
+
+    // Lightweight client-side validation — accumulate errors first, then
+    // show the first one (clearer UX than throwing one at a time).
+    const errors = [];
+    if (!name) errors.push('Please enter your full name.');
+    if (!/^\S+@\S+\.\S+$/.test(email)) errors.push('Please enter a valid email address.');
+    if (password.length < 6) errors.push('Password must be at least 6 characters.');
+    if (password !== confirm) errors.push("Passwords don't match.");
+    if (!termsInput.checked) errors.push('Please agree to the Terms of Service.');
+
+    if (errors.length > 0) {
+      errorBox.textContent = errors[0];
+      errorBox.classList.add('show');
+      return;
+    }
+
+    // Disable button + show spinner during the network call
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Creating account…';
+
+    const result = await signup(name, email, password);
+
+    if (result.ok) {
+      // Auto-login the freshly created user
+      saveSession(result.user);
+      window.toast(`Welcome aboard, ${result.user.name.split(' ')[0]}!`, 'success');
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 900);
+    } else {
+      errorBox.textContent = result.error || 'Signup failed.';
+      errorBox.classList.add('show');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    }
+  });
 });
