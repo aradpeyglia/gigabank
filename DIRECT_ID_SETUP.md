@@ -278,11 +278,11 @@ the visitor will drop back to anonymous after 5 minutes idle.
 | Phase | Status | Owner | Notes |
 |---|---|---|---|
 | 0 — Decisions | ✅ done | you | Cloudflare Workers chosen |
-| 1 — Generate keys | ✅ done | you | Regenerated after the leak; convert to PKCS8 before uploading |
+| 1 — Generate keys | ✅ done | you | Regenerated after the leak; PKCS8 conversion confirmed |
 | 2 — Register in Glia Hub | _todo_ | you | Paste `public.pem` into Hub before Phase 5 |
-| 3 — Worker scaffold + deploy | 🟡 in progress | both | Scaffold done — you handle `npm install` → `secret put` → `wrangler deploy` |
-| 4 — Frontend auth changes | _todo_ | me | After Phase 3 URL is in hand |
-| 5 — Glia script wiring | _todo_ | both | |
-| 6 — Refresh loop | _todo_ | me | |
-| 7 — Logout | _todo_ | me | |
-| 8 — End-to-end test | _todo_ | both | |
+| 3 — Worker scaffold + deploy | 🟡 cert provisioning | both | Code deployed to `gigabank-api.ahoura-radpey.workers.dev`; TLS handshake currently fails (Cloudflare provisioning the edge cert) |
+| 4 — Frontend auth changes | ✅ done | me | `auth.js` calls `/login` `/signup` `/refresh` `/logout`; tokens in localStorage; auto-refresh @ exp − 60s |
+| 5 — Glia script wiring | _todo_ | both | Need the Glia site script URL from you |
+| 6 — Refresh loop | ✅ done | me | Implemented in `auth.js` as part of Phase 4 |
+| 7 — Logout | ✅ done | me | `MGBAuth.logout()` wired into both nav and dashboard sign-out |
+| 8 — End-to-end test | _todo_ | both | After cert clears + Glia script wired |
