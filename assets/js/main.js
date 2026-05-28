@@ -26,6 +26,7 @@
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
+  initAuthNav();           // ← run BEFORE initMobileNav so swapped buttons get the ripple/etc.
   initMobileNav();
   initActiveNavLink();
   initRevealOnScroll();
@@ -39,6 +40,59 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletter();
   initTickerDuplication();
 });
+
+
+/* =========================================================================
+   AUTH NAV: when a user is signed in (session in localStorage via auth.js),
+   swap the default "Sign in / Open Account" header buttons for a personal
+   greeting + sign-out. Auth.js exposes window.MGBAuth.
+   ========================================================================= */
+function initAuthNav() {
+  // Bail silently if auth.js wasn't loaded on this page or no session exists
+  const user = window.MGBAuth?.getSession?.();
+  if (!user) return;
+
+  const navCta = document.querySelector('.nav-cta');
+  if (!navCta) return;
+
+  // The dashboard page builds its own custom nav (notifications, settings,
+  // logout) and identifies itself with #logout-btn. Don't clobber it.
+  if (document.getElementById('logout-btn')) return;
+
+  // Preserve the existing mobile hamburger toggle button (if present) so we
+  // can re-attach it after rebuilding the rest of the nav-cta contents.
+  const toggle = navCta.querySelector('.nav-toggle');
+
+  // First name + initial for a friendly chip + circular avatar
+  const firstName = user.name.split(' ')[0];
+  const initial = firstName.charAt(0).toUpperCase();
+
+  // Rebuild the buttons. We keep two slots to match the default nav-cta
+  // visually (chip + action button), so the header layout doesn't jump.
+  navCta.innerHTML = `
+    <a href="dashboard.html" class="btn btn--ghost btn--sm" title="Go to dashboard"
+       style="display:inline-flex; align-items:center; gap:8px;">
+      <span aria-hidden="true"
+            style="width:24px; height:24px; border-radius:50%;
+                   background: linear-gradient(135deg, var(--color-tan), var(--color-brown));
+                   color:#fff; display:inline-grid; place-items:center;
+                   font-weight:700; font-size:0.72rem;">${initial}</span>
+      Hi, ${firstName}
+    </a>
+    <button type="button" id="nav-signout" class="btn btn--secondary btn--sm">Sign out</button>
+  `;
+
+  // Re-append the hamburger toggle if it existed before we wiped innerHTML
+  if (toggle) navCta.appendChild(toggle);
+
+  // Wire up the sign-out: clear session, toast, then reload so all nav state
+  // (here AND on hidden subpages already-rendered links) refreshes cleanly.
+  navCta.querySelector('#nav-signout')?.addEventListener('click', () => {
+    window.MGBAuth.clearSession();
+    window.toast(`Signed out. See you soon, ${firstName}!`, '');
+    setTimeout(() => window.location.reload(), 700);
+  });
+}
 
 
 /* =========================================================================
