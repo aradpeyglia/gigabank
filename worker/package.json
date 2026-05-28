@@ -1,0 +1,18 @@
+{
+  "name": "gigabank-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker that signs Glia Direct ID (ES256) JWTs for the Gigabank demo site.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "secret:put-private": "wrangler secret put PRIVATE_KEY",
+    "secret:put-public": "wrangler secret put PUBLIC_KEY",
+    "secret:put-sheets-url": "wrangler secret put SHEETS_API_URL"
+  },
+  "devDependencies": {
+    "wrangler": "^3.78.0"
+  }
+}

@@ -20,3 +20,16 @@ node_modules/
 # Local environment files — never commit secrets
 .env
 .env.local
+
+# Cryptographic keys — NEVER commit these. Private keys belong in
+# Cloudflare secrets (`wrangler secret put`), not on disk in the repo.
+*.pem
+*.key
+*.p8
+*.pfx
+
+# Wrangler / Cloudflare Workers
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example

@@ -1,0 +1,35 @@
+# =========================================================================
+# wrangler.toml — Cloudflare Worker config for the Gigabank API
+# -------------------------------------------------------------------------
+# Run `wrangler deploy` from THIS DIRECTORY (worker/), not from the project
+# root. Wrangler uses this file to know what to build and where to put it.
+# =========================================================================
+
+# Public name of the Worker. Cloudflare will publish to
+#   https://gigabank-api.<your-cf-subdomain>.workers.dev
+name = "gigabank-api"
+
+# Entry file. Wrangler will bundle this + its imports into a single script.
+main = "src/index.js"
+
+# Tells Workers which runtime semantics to use. Pinning a date is
+# Cloudflare's recommended practice — they bump default behavior over time
+# and you don't want a silent change to surprise you.
+compatibility_date = "2024-10-01"
+
+# Turn on the bundled observability dashboard (free) so you can see logs
+# and per-request stats in the Cloudflare Workers UI.
+[observability]
+enabled = true
+
+# -------------------------------------------------------------------------
+# SECRETS — do NOT put them in this file.
+# Instead, run these once from this directory:
+#
+#     wrangler secret put PRIVATE_KEY
+#     wrangler secret put PUBLIC_KEY
+#     wrangler secret put SHEETS_API_URL
+#
+# Wrangler prompts you to paste each value, then stores it encrypted on
+# Cloudflare. The Worker reads them at request time as env.PRIVATE_KEY etc.
+# -------------------------------------------------------------------------

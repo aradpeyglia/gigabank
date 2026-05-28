@@ -87,16 +87,21 @@ If you want to override any default, say so before Phase 3.
 
 ### Phase 1 — Generate the ES256 key pair (you, locally)
 
-Run these on your machine. Never commit these files.
+Run these on your machine. Never commit these files. The extra `pkcs8`
+step is required because Web Crypto in the Worker only accepts the
+PKCS8 format — the default `ecparam` output is the older SEC1 format
+and would fail to import at runtime.
 
 ```bash
-openssl ecparam -genkey -name prime256v1 -noout -out private.pem
-openssl ec -in private.pem -pubout -out public.pem
+openssl ecparam -genkey -name prime256v1 -out private-sec1.pem
+openssl pkcs8   -topk8 -nocrypt -in private-sec1.pem -out private.pem
+openssl ec      -in private.pem -pubout -out public.pem
+rm private-sec1.pem
 ```
 
 Then:
 
-- [ ] Add `private.pem` and `public.pem` to `.gitignore` (I'll do this)
+- [x] Add `*.pem` patterns to `.gitignore` (done)
 - [ ] Save both files somewhere outside the repo (password manager,
       `~/.glia-keys/`, etc.) — you'll need them again for re-deploys
       and for the Glia Hub paste
@@ -116,67 +121,41 @@ Confirm:
 
 ### Phase 3 — Stand up the signing backend (collaborative)
 
-**You do:**
+The `worker/` directory is now scaffolded with:
 
-1. Install Wrangler globally:
-   ```bash
-   npm install -g wrangler
-   ```
-2. Log in:
-   ```bash
-   wrangler login
-   ```
-3. After I scaffold the `worker/` directory (next step), `cd worker` and run:
-   ```bash
-   wrangler secret put PRIVATE_KEY
-   ```
-   Paste the **entire contents of `private.pem`** (including the
-   `-----BEGIN EC PRIVATE KEY-----` and `-----END` lines).
-4. Then:
-   ```bash
-   wrangler secret put SHEETS_API_URL
-   ```
-   Paste your existing Apps Script Web App URL.
+- `worker/wrangler.toml` — config (name, entry point, compatibility date)
+- `worker/package.json` — Wrangler dev dep + handy npm scripts
+- `worker/src/index.js` — request router (`/health`, `/login`, `/signup`,
+  `/refresh`, `/logout`) with CORS preflight and structured error handling
+- `worker/src/jwt.js` — ES256 sign + verify via `crypto.subtle`, no libs
+- `worker/src/sheets.js` — wrapper that POSTs to the existing Apps Script
+- `worker/README.md` — step-by-step deploy guide
 
-**I do:**
+Claim mapping inside `mintToken()` already produces a Direct ID payload
+with `sub`, `iat`, `exp` (TTL = 5 min), `name`, `given_name`,
+`family_name`, `email`, and `lookup_id` — all per Glia's spec.
 
-5. Scaffold `worker/`:
-   - `worker/wrangler.toml` — config (name, account, routes, vars)
-   - `worker/package.json` — Wrangler + types
-   - `worker/src/index.ts` — request router with `/login`, `/signup`,
-     `/refresh`, `/logout` handlers, CORS preflight
-   - `worker/src/jwt.ts` — ES256 signing using `crypto.subtle.importKey`
-     + `crypto.subtle.sign` (no external libs needed)
-   - `worker/src/sheets.ts` — wrapper to call the existing Apps Script
-6. Implement claim mapping so the JWT carries:
-   - `sub` — the user's stable ID (we'll use the email for simplicity)
-   - `iat` — issued-at timestamp
-   - `exp` — `iat + 300` (5 minutes)
-   - `name`, `given_name`, `family_name` — split from the Sheet's
-     name column
-   - `email` — same as `sub` for now
-   - `lookup_id` — same as `sub` so it shows up in the operator's
-     Visitor Panel
+**You do** (full walkthrough in `worker/README.md`):
 
-**You do:**
-
-7. From `worker/`:
+1. `cd worker && npm install`
+2. `npx wrangler secret put PRIVATE_KEY`  — paste your PKCS8 `private.pem`
+3. `npx wrangler secret put PUBLIC_KEY`   — paste your `public.pem`
+4. `npx wrangler secret put SHEETS_API_URL` — paste the Apps Script URL
+5. `npx wrangler deploy`  →  capture the `*.workers.dev` URL
+6. Smoke test:
    ```bash
-   wrangler deploy
-   ```
-   Wrangler prints the URL. Share it with me.
-8. Test the deployment with curl:
-   ```bash
+   curl https://YOUR-WORKER.workers.dev/health
    curl -X POST https://YOUR-WORKER.workers.dev/login \
      -H "Content-Type: application/json" \
      -d '{"email":"demo@megagankybank.com","password":"demo1234"}'
    ```
-   You should see `{ ok: true, user: {...}, idToken: "eyJ..." }`.
+   You should see `{ ok: true, user: {...}, idToken: "eyJ...", expiresAt: ... }`.
 
 Phase 3 done when:
 
 - [ ] Worker URL captured: `https://_____.workers.dev`
-- [ ] curl test returns a valid JWT
+- [ ] `/health` returns 200
+- [ ] curl `/login` returns a valid JWT
 
 ### Phase 4 — Update frontend auth flow (me)
 
@@ -298,11 +277,11 @@ the visitor will drop back to anonymous after 5 minutes idle.
 
 | Phase | Status | Owner | Notes |
 |---|---|---|---|
-| 0 — Decisions | _todo_ | you | |
-| 1 — Generate keys | _todo_ | you | |
-| 2 — Register in Glia Hub | _todo_ | you | |
-| 3 — Worker scaffold + deploy | _todo_ | both | |
-| 4 — Frontend auth changes | _todo_ | me | |
+| 0 — Decisions | ✅ done | you | Cloudflare Workers chosen |
+| 1 — Generate keys | ✅ done | you | Regenerated after the leak; convert to PKCS8 before uploading |
+| 2 — Register in Glia Hub | _todo_ | you | Paste `public.pem` into Hub before Phase 5 |
+| 3 — Worker scaffold + deploy | 🟡 in progress | both | Scaffold done — you handle `npm install` → `secret put` → `wrangler deploy` |
+| 4 — Frontend auth changes | _todo_ | me | After Phase 3 URL is in hand |
 | 5 — Glia script wiring | _todo_ | both | |
 | 6 — Refresh loop | _todo_ | me | |
 | 7 — Logout | _todo_ | me | |
