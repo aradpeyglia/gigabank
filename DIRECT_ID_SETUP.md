@@ -279,10 +279,10 @@ the visitor will drop back to anonymous after 5 minutes idle.
 |---|---|---|---|
 | 0 — Decisions | ✅ done | you | Cloudflare Workers chosen |
 | 1 — Generate keys | ✅ done | you | Regenerated after the leak; PKCS8 conversion confirmed |
-| 2 — Register in Glia Hub | _todo_ | you | Paste `public.pem` into Hub before Phase 5 |
-| 3 — Worker scaffold + deploy | 🟡 cert provisioning | both | Code deployed to `gigabank-api.ahoura-radpey.workers.dev`; TLS handshake currently fails (Cloudflare provisioning the edge cert) |
+| 2 — Register in Glia Hub | _todo_ | you | Paste `public.pem` into Hub — last remaining setup step |
+| 3 — Worker scaffold + deploy | ✅ done | both | `gigabank-api.ahoura-radpey.workers.dev` live; smoke test passes (health, login, refresh, bad-creds 401) |
 | 4 — Frontend auth changes | ✅ done | me | `auth.js` calls `/login` `/signup` `/refresh` `/logout`; tokens in localStorage; auto-refresh @ exp − 60s |
-| 5 — Glia script wiring | _todo_ | both | Need the Glia site script URL from you |
+| 5 — Glia script wiring | ✅ done | both | You added the Glia script to all 7 pages; I added the inline `getGliaContext` reader in each `<head>` |
 | 6 — Refresh loop | ✅ done | me | Implemented in `auth.js` as part of Phase 4 |
 | 7 — Logout | ✅ done | me | `MGBAuth.logout()` wired into both nav and dashboard sign-out |
-| 8 — End-to-end test | _todo_ | both | After cert clears + Glia script wired |
+| 8 — End-to-end test | _todo_ | both | Log in on GitHub Pages → confirm Glia Visitor Panel shows identified visitor |
