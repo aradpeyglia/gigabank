@@ -27,6 +27,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initAuthNav();           // ← run BEFORE initMobileNav so swapped buttons get the ripple/etc.
+  initColorToggle();       // ← run AFTER initAuthNav so it survives the logged-in nav rebuild
   initMobileNav();
   initActiveNavLink();
   initRevealOnScroll();
@@ -92,6 +93,75 @@ function initAuthNav() {
     window.toast(`Signed out. See you soon, ${firstName}!`, '');
     setTimeout(() => window.MGBAuth.logout(), 700);
   });
+}
+
+
+/* =========================================================================
+   COLOR PREFERENCE TOGGLE (red / blue)
+   -------------------------------------------------------------------------
+   Injects a red/blue toggle switch into the navbar on EVERY page. Because
+   main.js is loaded on all pages, defining it here puts the toggle
+   everywhere (public pages + dashboard) without editing each HTML file.
+
+   The chosen state is written to localStorage under 'mgb_color_pref', so
+   it persists permanently for the user — across page navigations AND
+   future browser sessions. When set to red the label reads "Red" (in red);
+   when blue, it reads "Blue" (in blue).
+   ========================================================================= */
+function initColorToggle() {
+  // The toggle lives in the right-hand CTA cluster of the navbar.
+  const navCta = document.querySelector('.nav-cta');
+  if (!navCta) return;
+
+  // Guard against accidentally inserting two toggles if this ever runs twice.
+  if (navCta.querySelector('.color-toggle')) return;
+
+  // localStorage key that holds the user's saved choice permanently.
+  const STORAGE_KEY = 'mgb_color_pref';
+
+  // Read the saved preference. If there isn't a valid one yet (first ever
+  // visit), default to 'blue'.
+  let color = localStorage.getItem(STORAGE_KEY);
+  if (color !== 'red' && color !== 'blue') color = 'blue';
+
+  // Build the toggle button: a colored track with a sliding white knob,
+  // followed by a text label that names the current color.
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'color-toggle';
+  btn.setAttribute('role', 'switch');
+  btn.innerHTML = `
+    <span class="color-toggle-track"><span class="color-toggle-thumb"></span></span>
+    <span class="color-toggle-label"></span>
+  `;
+  const label = btn.querySelector('.color-toggle-label');
+
+  // Apply a given state to the DOM. `persist` controls whether we also
+  // write it back to localStorage (we skip that on the very first render
+  // so we don't pointlessly re-write the same value).
+  function apply(next, persist) {
+    color = next;
+    // The data-color attribute drives ALL the visual changes via CSS.
+    btn.dataset.color = color;
+    // Accessibility: announce the on/off-style state + a readable label.
+    btn.setAttribute('aria-checked', color === 'blue' ? 'true' : 'false');
+    btn.setAttribute('aria-label', `Color preference: ${color}`);
+    // Capitalize for display: "red" → "Red", "blue" → "Blue".
+    label.textContent = color.charAt(0).toUpperCase() + color.slice(1);
+    if (persist) localStorage.setItem(STORAGE_KEY, color);
+  }
+
+  // Initial paint from the stored value (no need to re-persist it).
+  apply(color, false);
+
+  // Each click flips to the other color and saves it permanently.
+  btn.addEventListener('click', () => {
+    apply(color === 'red' ? 'blue' : 'red', true);
+  });
+
+  // Place the toggle as the first item in the CTA cluster (left of the
+  // Sign in / avatar buttons).
+  navCta.insertBefore(btn, navCta.firstChild);
 }
 
 
