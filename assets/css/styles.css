@@ -327,66 +327,14 @@ h4 { font-size: 1.25rem; }
 }
 
 /* -------------------------------------------------------------------------
-   COLOR PREFERENCE TOGGLE (red / blue)
-   Injected into every page's .nav-cta by main.js → initColorToggle().
-   The chosen state is stored in localStorage so it sticks permanently
-   for the user across pages and browser sessions. The whole component is
-   driven off a single data-color="red|blue" attribute on the button.
+   ROUTING BUTTONS ("Route to GB" / "Route to Human")
+   Injected into every page's .nav-cta by main.js → initRouteButtons().
+   They reuse the standard .btn styling; this rule just keeps their text
+   from wrapping in tighter navbars.
    ------------------------------------------------------------------------- */
-.color-toggle {
-  display: inline-flex;          /* keep the switch + text label on one row  */
-  align-items: center;
-  gap: 8px;
-  background: none;              /* it's its own component, not a .btn        */
-  border: none;
-  padding: 4px 6px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 700;
-  -webkit-tap-highlight-color: transparent;
+.route-btn {
+  white-space: nowrap;
 }
-
-/* The pill-shaped track that changes color with the state                   */
-.color-toggle-track {
-  position: relative;            /* anchor for the absolutely-placed thumb    */
-  width: 46px;
-  height: 26px;
-  border-radius: var(--radius-pill);
-  flex-shrink: 0;               /* never let the track squish in tight navs   */
-  transition: background-color var(--transition-base);
-}
-
-/* The white sliding knob; we move it with translateX per state              */
-.color-toggle-thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  transition: transform var(--transition-base);
-}
-
-/* The text label ("Red" / "Blue"). min-width reserves space so the navbar
-   layout doesn't shift horizontally when the word length changes.          */
-.color-toggle-label {
-  min-width: 34px;
-  text-align: left;
-  transition: color var(--transition-base);
-}
-
-/* ---- RED state: track + label red, knob parked on the left ------------- */
-.color-toggle[data-color="red"] .color-toggle-track  { background-color: #e23b3b; }
-.color-toggle[data-color="red"] .color-toggle-thumb  { transform: translateX(0); }
-.color-toggle[data-color="red"] .color-toggle-label  { color: #e23b3b; }
-
-/* ---- BLUE state: track + label blue, knob slid to the right ------------ */
-.color-toggle[data-color="blue"] .color-toggle-track { background-color: #2f6fed; }
-.color-toggle[data-color="blue"] .color-toggle-thumb { transform: translateX(20px); }
-.color-toggle[data-color="blue"] .color-toggle-label { color: #2f6fed; }
 
 
 /* -------------------------------------------------------------------------
