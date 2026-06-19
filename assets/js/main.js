@@ -116,18 +116,21 @@ function initRouteButtons() {
   if (navCta.querySelector('.route-btn')) return;
 
   // Small helper that builds a single pill button with the given label.
-  function makeButton(text) {
+  // `uniqueClass` is an extra, button-specific hook so each button can be
+  // targeted individually (e.g. for wiring up routing logic later).
+  function makeButton(text, uniqueClass) {
     const btn = document.createElement('button');
     btn.type = 'button';
-    // route-btn is our hook; the .btn classes give it the house styling.
-    btn.className = 'route-btn btn btn--ghost btn--sm';
+    // route-btn is the shared hook; uniqueClass is per-button; the .btn
+    // classes give it the house styling.
+    btn.className = `route-btn ${uniqueClass} btn btn--ghost btn--sm`;
     btn.textContent = text;
     return btn;
   }
 
-  // Build both routing buttons.
-  const routeGb    = makeButton('Route to GB');
-  const routeHuman = makeButton('Route to Human');
+  // Build both routing buttons, each with its own unique class.
+  const routeGb    = makeButton('Route to GB', 'route-btn--gb');
+  const routeHuman = makeButton('Route to Human', 'route-btn--human');
 
   // Insert them at the front of the CTA cluster (left of the Sign in /
   // avatar buttons). We insert "Route to GB" first, then place
