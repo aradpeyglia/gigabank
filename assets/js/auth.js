@@ -176,9 +176,11 @@ function forceLogout(message) {
   if (message && typeof window.toast === 'function') {
     window.toast(message, 'error');
   }
-  // Only kick to login if we're not already there
+  // Only kick to login if we're not already there. window.MGB_BASE is set by
+  // nested pages (e.g. /accounttypes/*) to '../' so the redirect resolves to
+  // the site-root login.html instead of a non-existent nested one.
   if (!/login\.html$/i.test(window.location.pathname)) {
-    setTimeout(() => { window.location.href = 'login.html'; }, 600);
+    setTimeout(() => { window.location.href = (window.MGB_BASE || '') + 'login.html'; }, 600);
   }
 }
 
@@ -307,7 +309,9 @@ async function logout() {
     }
   }
   clearSession();
-  window.location.href = 'login.html';
+  // window.MGB_BASE ('../' on nested pages) keeps this pointed at the
+  // site-root login.html regardless of how deep the current page is.
+  window.location.href = (window.MGB_BASE || '') + 'login.html';
 }
 
 
@@ -355,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.toast(`Welcome back, ${result.user.name}!`, 'success');
       // Slight delay so the toast is visible before redirect
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
+        window.location.href = (window.MGB_BASE || '') + 'dashboard.html';
       }, 700);
     } else {
       errorBox.textContent = result.error || 'Login failed.';
@@ -460,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       window.toast(`Welcome aboard, ${result.user.name.split(' ')[0]}!`, 'success');
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
+        window.location.href = (window.MGB_BASE || '') + 'dashboard.html';
       }, 900);
     } else {
       errorBox.textContent = result.error || 'Signup failed.';

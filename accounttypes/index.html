@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--
+  accounttypes/index.html — "Account Types" section hub
+  ---------------------------------------------------------------
+  This is a SECOND-LEVEL page. It lives in the /accounttypes/ folder, so
+  its public URL is:  /accounttypes/  (or /accounttypes/index.html)
+
+  Because it sits one directory deep, EVERY link/asset that points back at
+  the site root needs a "../" prefix:
+    • CSS / JS / favicon  → ../assets/...
+    • Nav + footer links  → ../index.html, ../about.html, etc.
+  Links to sibling pages in THIS folder stay bare (checking.html, etc.).
+-->
+<html lang="en">
+<head>
+  <!-- Tell auth.js how to get back to the site root from this nested page.
+       auth.js prefixes its redirects (login.html / dashboard.html) with
+       this so "Sign out" from a 2nd-level page lands in the right place. -->
+  <script>window.MGB_BASE = '../';</script>
+
+  <script>
+    // Define getGliaContext synchronously so the async Glia script can read
+    // the visitor's Direct ID token on its very first poll — even before
+    // ../assets/js/auth.js has parsed at the bottom of <body>.
+    window.getGliaContext = function () {
+      try {
+        var stored = JSON.parse(localStorage.getItem('mgb_id_token') || 'null');
+        if (!stored || !stored.idToken) return {};
+        var nowSec = Math.floor(Date.now() / 1000);
+        if (stored.expiresAt - 10 < nowSec) return {};
+        return { idToken: stored.idToken };
+      } catch (e) { return {}; }
+    };
+  </script>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Types — Ahoura's Megagankybank</title>
+  <meta name="description" content="Browse every Megagankybank account type — checking, savings, and student — and open the one that fits your life.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+  <style>
+    /* Grid of account-type "hub" tiles. Each links into a deeper page.     */
+    .type-tile {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      text-decoration: none;
+      color: inherit;
+      transition: transform var(--transition-base), box-shadow var(--transition-base);
+    }
+    /* Lift the whole card on hover for an interactive, tappable feel.       */
+    .type-tile:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    /* The big emoji "icon" chip at the top of each tile.                    */
+    .type-tile .type-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      background: linear-gradient(135deg, var(--color-cream), var(--color-tan));
+    }
+    .type-tile .type-go {
+      margin-top: auto;
+      font-weight: 600;
+      color: var(--color-brown);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================ HEADER -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="../index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank</a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li class="nav-dropdown">
+          <a href="../services.html">Services ▾</a>
+          <div class="nav-dropdown-menu">
+            <a href="../services.html#checking">Checking Accounts</a>
+            <a href="../services.html#savings">Savings & CDs</a>
+            <a href="../services.html#cards">Credit Cards</a>
+            <a href="../services.html#investing">Investing</a>
+            <a href="index.html">Account Types</a>
+          </div>
+        </li>
+        <li><a href="../loans.html">Loans</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="../login.html" class="btn btn--ghost btn--sm">Sign in</a>
+        <a href="../login.html" class="btn btn--primary btn--sm">Open Account</a>
+        <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>Account <em style="color: var(--color-brown); font-style:normal;">types.</em></h1>
+      <p>Every Megagankybank account in one place. Pick a category to see the full breakdown, rates, and how to open.</p>
+      <!-- Breadcrumb shows the 2nd-level path: Home › Services › Account Types -->
+      <ol class="breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../services.html">Services</a></li>
+        <li>Account Types</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ TILE GRID -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Choose a category</span>
+        <h2>Three ways to bank with us</h2>
+        <p>Each of these opens a dedicated page at <code>/accounttypes/…</code></p>
+      </div>
+
+      <div class="grid grid--3">
+        <!-- Each tile is a whole-card link into a deeper 2nd-level page.    -->
+        <a href="checking.html" class="card type-tile reveal">
+          <div class="type-icon">💳</div>
+          <h3>Checking</h3>
+          <p class="text-muted">Everyday spending accounts with no hidden fees and cashback on debit.</p>
+          <span class="type-go">View checking accounts →</span>
+        </a>
+
+        <a href="savings.html" class="card type-tile reveal">
+          <div class="type-icon">🏦</div>
+          <h3>Savings &amp; CDs</h3>
+          <p class="text-muted">High-yield savings and CD ladders that make your money work harder.</p>
+          <span class="type-go">View savings accounts →</span>
+        </a>
+
+        <a href="student.html" class="card type-tile reveal">
+          <div class="type-icon">🎓</div>
+          <h3>Student</h3>
+          <p class="text-muted">Fee-free banking built for first-timers, with budgeting tools baked in.</p>
+          <span class="type-go">View student accounts →</span>
+        </a>
+      </div>
+
+      <!-- A little context banner explaining the nested structure demo.     -->
+      <div class="reveal mt-xl" style="background: linear-gradient(135deg, var(--color-cream), var(--color-tan)); padding: var(--space-xl); border-radius: var(--radius-xl); text-align: center;">
+        <h3 style="margin-bottom: var(--space-sm);">Not sure which one?</h3>
+        <p class="text-muted" style="max-width: 560px; margin: 0 auto var(--space-md);">
+          Talk to a specialist and we'll match you to the right account in a few minutes.
+        </p>
+        <a href="../contact.html" class="btn btn--primary">Talk to us</a>
+        <a href="../services.html" class="btn btn--secondary">Compare everything</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="nav-brand" style="color: var(--color-tan);"><span class="nav-brand-logo">M</span>Megagankybank</div>
+          <p>Banking that finally feels like home. Member FDIC. Equal Housing Lender.</p>
+          <div class="footer-social mt-md">
+            <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">in</a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Account Types</h4>
+          <ul>
+            <li><a href="checking.html">Checking</a></li>
+            <li><a href="savings.html">Savings &amp; CDs</a></li>
+            <li><a href="student.html">Student</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../about.html">About us</a></li>
+            <li><a href="../about.html#leadership">Leadership</a></li>
+            <li><a href="../about.html#careers">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="../contact.html">Contact us</a></li>
+            <li><a href="../contact.html#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-newsletter">
+          <h4>Get our weekly money tips</h4>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Short, useful, and we promise we'll never sell your email.</p>
+          <form>
+            <input type="email" placeholder="you@email.com" required>
+            <button type="submit" class="btn btn--tan btn--sm">Join</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Ahoura's Megagankybank, N.A. All rights reserved. This is a demo site — not a real bank.</span>
+        <div class="flex gap-md">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

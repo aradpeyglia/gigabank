@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<!--
+  accounttypes/checking.html — deep (2nd-level) Checking accounts page
+  URL: /accounttypes/checking.html
+  Root-facing links use "../"; sibling pages in this folder are bare.
+-->
+<html lang="en">
+<head>
+  <script>window.MGB_BASE = '../';</script>
+  <script>
+    window.getGliaContext = function () {
+      try {
+        var stored = JSON.parse(localStorage.getItem('mgb_id_token') || 'null');
+        if (!stored || !stored.idToken) return {};
+        var nowSec = Math.floor(Date.now() / 1000);
+        if (stored.expiresAt - 10 < nowSec) return {};
+        return { idToken: stored.idToken };
+      } catch (e) { return {}; }
+    };
+  </script>
+  <script async src="https://api.glia.com/salemove_integration.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checking Accounts — Account Types — Ahoura's Megagankybank</title>
+  <meta name="description" content="Compare Megagankybank checking accounts: Essential, Cream, and Tan Premier.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+  <style>
+    .account-card { display: flex; flex-direction: column; gap: var(--space-md); position: relative; }
+    .account-card.featured { border: 2px solid var(--color-tan); transform: scale(1.03); }
+    .account-card .price { font-family: var(--font-serif); font-size: 2.5rem; color: var(--color-brown-dark); }
+    .account-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .account-card ul li::before { content: '✓ '; color: var(--color-tan-dark); font-weight: 700; }
+    .account-card ul li.no::before { content: '✕ '; color: var(--color-text-muted); }
+    .account-card ul li.no { color: var(--color-text-muted); text-decoration: line-through; opacity: 0.7; }
+    /* Small cross-link row to jump between sibling account-type pages.       */
+    .sibling-links { display: flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================ HEADER -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="../index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank</a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li class="nav-dropdown">
+          <a href="../services.html">Services ▾</a>
+          <div class="nav-dropdown-menu">
+            <a href="../services.html#checking">Checking Accounts</a>
+            <a href="../services.html#savings">Savings & CDs</a>
+            <a href="../services.html#cards">Credit Cards</a>
+            <a href="../services.html#investing">Investing</a>
+            <a href="index.html">Account Types</a>
+          </div>
+        </li>
+        <li><a href="../loans.html">Loans</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="../login.html" class="btn btn--ghost btn--sm">Sign in</a>
+        <a href="../login.html" class="btn btn--primary btn--sm">Open Account</a>
+        <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>Checking <em style="color: var(--color-brown); font-style:normal;">accounts.</em></h1>
+      <p>Daily-money accounts with no hidden fees, 55,000+ free ATMs, and cashback on the account that's right for you.</p>
+      <ol class="breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="index.html">Account Types</a></li>
+        <li>Checking</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ CARDS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Compare checking</span>
+        <h2>Three options, zero hidden fees</h2>
+      </div>
+
+      <div class="grid grid--3">
+        <div class="card account-card reveal">
+          <h3>Essential Checking</h3>
+          <div class="price">Free</div>
+          <p class="text-muted" style="font-size: 0.9rem;">For everyday spending</p>
+          <ul>
+            <li>Free debit card</li>
+            <li>55,000+ free ATMs</li>
+            <li>Mobile check deposit</li>
+            <li>Bill pay &amp; Zelle</li>
+            <li class="no">Out-of-network ATM rebates</li>
+            <li class="no">Dedicated relationship manager</li>
+          </ul>
+          <a href="../login.html" class="btn btn--secondary btn--block">Open Essential</a>
+        </div>
+
+        <div class="card account-card featured reveal">
+          <span class="badge badge--success" style="position: absolute; top: -12px; right: 20px;">Most Popular</span>
+          <h3>Cream Checking</h3>
+          <div class="price">$0<span style="font-size: 0.85rem; color: var(--color-text-muted);"> w/ direct deposit</span></div>
+          <p class="text-muted" style="font-size: 0.9rem;">A little more for a little more</p>
+          <ul>
+            <li>Everything in Essential</li>
+            <li>1% cashback on debit</li>
+            <li>Early direct deposit</li>
+            <li>ATM rebates ($20/mo)</li>
+            <li>Overdraft forgiveness $200</li>
+            <li class="no">Concierge travel &amp; rewards</li>
+          </ul>
+          <a href="../login.html" class="btn btn--primary btn--block">Open Cream</a>
+        </div>
+
+        <div class="card account-card reveal">
+          <h3>Tan Premier</h3>
+          <div class="price">$25<span style="font-size: 0.85rem; color: var(--color-text-muted);">/mo</span></div>
+          <p class="text-muted" style="font-size: 0.9rem;">For high-balance customers</p>
+          <ul>
+            <li>Everything in Cream</li>
+            <li>Unlimited wire transfers</li>
+            <li>4 free safe-deposit boxes</li>
+            <li>Dedicated relationship manager</li>
+            <li>Concierge travel &amp; rewards</li>
+            <li>Free notary services</li>
+          </ul>
+          <a href="../login.html" class="btn btn--secondary btn--block">Open Premier</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ SIBLING LINKS -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="eyebrow">Keep exploring</span>
+        <h2>Other account types</h2>
+      </div>
+      <div class="sibling-links reveal">
+        <a href="savings.html" class="btn btn--secondary">🏦 Savings &amp; CDs →</a>
+        <a href="student.html" class="btn btn--secondary">🎓 Student →</a>
+        <a href="index.html" class="btn btn--ghost">← All account types</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="nav-brand" style="color: var(--color-tan);"><span class="nav-brand-logo">M</span>Megagankybank</div>
+          <p>Banking that finally feels like home. Member FDIC. Equal Housing Lender.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Account Types</h4>
+          <ul>
+            <li><a href="checking.html">Checking</a></li>
+            <li><a href="savings.html">Savings &amp; CDs</a></li>
+            <li><a href="student.html">Student</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="../about.html">About us</a></li>
+            <li><a href="../contact.html">Contact us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-newsletter">
+          <h4>Get our weekly money tips</h4>
+          <p style="font-size: 0.9rem; opacity: 0.85;">Short, useful, and we promise we'll never sell your email.</p>
+          <form>
+            <input type="email" placeholder="you@email.com" required>
+            <button type="submit" class="btn btn--tan btn--sm">Join</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Ahoura's Megagankybank, N.A. All rights reserved. This is a demo site — not a real bank.</span>
+        <div class="flex gap-md">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
