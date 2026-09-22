@@ -49,6 +49,23 @@
     }
     .branch-card h4 { margin-bottom: 4px; }
     .branch-card p { font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 4px; }
+
+    /* Move Glia's floating engagement bubble from the lower-right corner
+       to the lower-left corner on this Contact page only. Glia injects its
+       own stylesheet after this page loads, so !important ensures these
+       positioning values continue to win in the cascade. */
+    #salemove .sm-touch-draggable-lower-right {
+      right: auto !important;
+      left: 24px !important;
+    }
+
+    /* Keep the bubble comfortably inside narrow screens and account for
+       devices whose display has a left-side safe-area inset. */
+    @media (max-width: 600px) {
+      #salemove .sm-touch-draggable-lower-right {
+        left: max(12px, env(safe-area-inset-left)) !important;
+      }
+    }
   </style>
 </head>
 <body>
