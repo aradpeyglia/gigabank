@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     errorBox.classList.remove('show');
 
-    // Pretend to send and clear the form on success
-    window.toast(`Thanks ${data.name}! We'll get back to you within 24 hours.`, 'success');
+    // Confirm the UI test without implying that any data was transmitted.
+    window.toast(`Demo complete, ${data.name}. No form data was sent or stored.`, 'success');
     form.reset();
   });
 });

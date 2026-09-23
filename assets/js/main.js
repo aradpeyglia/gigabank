@@ -25,6 +25,7 @@
    though we still attach scripts at end-of-body to be safe.
    ========================================================================= */
 document.addEventListener('DOMContentLoaded', () => {
+  initDemoSafetyBanner();
   initHeader();
   initAuthNav();           // ← run BEFORE initMobileNav so swapped buttons get the ripple/etc.
   initRouteButtons();      // ← run AFTER initAuthNav so the buttons survive the logged-in nav rebuild
@@ -41,6 +42,36 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletter();
   initTickerDuplication();
 });
+
+
+/* =========================================================================
+   PERMANENT DEMO / SIMULATION DISCLOSURE
+   -------------------------------------------------------------------------
+   This site intentionally resembles a banking interface for UI and Glia
+   integration testing. A persistent, non-dismissible banner makes that
+   purpose unambiguous on every page and warns visitors not to submit real
+   credentials, personal information, or financial information.
+
+   main.js is loaded by every public page and the dashboard, so injecting
+   the banner here keeps the disclosure consistent without duplicating the
+   same markup across eleven HTML files.
+   ========================================================================= */
+function initDemoSafetyBanner() {
+  // Avoid duplicates if main.js is evaluated more than once.
+  if (document.querySelector('.demo-safety-banner')) return;
+
+  const banner = document.createElement('div');
+  banner.className = 'demo-safety-banner';
+  banner.setAttribute('role', 'note');
+  banner.setAttribute('aria-label', 'Demo site warning');
+  banner.innerHTML = `
+    <strong>DEMO / TRAINING SIMULATION</strong>
+    <span>No real banking services are provided. Never enter real passwords, personal data, or financial information.</span>
+  `;
+
+  // Place the disclosure before all page content, including the navbar.
+  document.body.prepend(banner);
+}
 
 
 /* =========================================================================

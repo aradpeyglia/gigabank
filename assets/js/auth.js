@@ -398,9 +398,9 @@ document.addEventListener('DOMContentLoaded', () => {
       loginView.classList.toggle('hidden', wantSignup);
       signupView.classList.toggle('hidden', !wantSignup);
 
-      // Update the page title for a polished touch
-      document.title = (wantSignup ? 'Create account' : 'Sign In')
-        + " — Ahoura's Megagankybank";
+      // Keep the browser title explicit that both flows create/use test data.
+      document.title = (wantSignup ? 'Create Test Data' : 'Demo Access')
+        + " — Ahoura's Megagankybank UI Simulation";
     });
   });
 });
@@ -437,11 +437,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lightweight client-side validation — accumulate errors first, then
     // show the first one (clearer UX than throwing one at a time).
     const errors = [];
-    if (!name) errors.push('Please enter your full name.');
-    if (!/^\S+@\S+\.\S+$/.test(email)) errors.push('Please enter a valid email address.');
-    if (password.length < 6) errors.push('Password must be at least 6 characters.');
-    if (password !== confirm) errors.push("Passwords don't match.");
-    if (!termsInput.checked) errors.push('Please agree to the Terms of Service.');
+    if (!name) errors.push('Please enter a fictional test name.');
+    if (!/^\S+@\S+\.\S+$/.test(email)) errors.push('Please enter a test-format email address.');
+    if (password.length < 6) errors.push('The demo-only password must be at least 6 characters.');
+    if (password !== confirm) errors.push("The test passwords don't match.");
+    if (!termsInput.checked) errors.push('Please confirm that all submitted data is fictional.');
 
     if (errors.length > 0) {
       errorBox.textContent = errors[0];

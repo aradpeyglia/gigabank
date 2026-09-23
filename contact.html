@@ -34,6 +34,7 @@
   <script async src="https://api.glia.com/salemove_integration.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive">
   <title>Contact — Ahoura's Megagankybank</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -94,7 +95,7 @@
       </ul>
       <div class="nav-cta">
         <a href="login.html" class="btn btn--ghost btn--sm">Sign in</a>
-        <a href="services.html" class="btn btn--primary btn--sm">Open Account</a>
+        <a href="services.html" class="btn btn--primary btn--sm">Explore Demo</a>
         <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -118,26 +119,26 @@
       <div class="grid grid--4">
         <div class="card text-center reveal">
           <div class="card-icon" style="margin: 0 auto var(--space-md);">📞</div>
-          <h4>Call us</h4>
-          <p>1-800-MGB-BANK</p>
+          <h4>Sample phone action</h4>
+          <p>Dummy number for UI testing</p>
           <a href="tel:18006425222" class="card-link">Tap to call →</a>
         </div>
         <div class="card text-center reveal">
           <div class="card-icon" style="margin: 0 auto var(--space-md);">💬</div>
-          <h4>Live chat</h4>
-          <p>24/7 in-app & on this site</p>
+          <h4>Glia test chat</h4>
+          <p>Integration testing on this demo</p>
           <button class="card-link" onclick="window.toast('Live chat would open here.','')">Open chat →</button>
         </div>
         <div class="card text-center reveal">
           <div class="card-icon" style="margin: 0 auto var(--space-md);">✉️</div>
-          <h4>Email</h4>
-          <p>help@megagankybank.com</p>
+          <h4>Sample email action</h4>
+          <p>Dummy address for UI testing</p>
           <a href="mailto:help@megagankybank.com" class="card-link">Send email →</a>
         </div>
         <div class="card text-center reveal">
           <div class="card-icon" style="margin: 0 auto var(--space-md);">🏦</div>
-          <h4>Visit a branch</h4>
-          <p>247 locations nationwide</p>
+          <h4>Explore sample locations</h4>
+          <p>Fictional branch-location UI</p>
           <a href="#branches" class="card-link">Find one →</a>
         </div>
       </div>
@@ -149,18 +150,18 @@
     <div class="container grid grid--2" style="align-items: start; gap: var(--space-xl);">
       <!-- Form column -->
       <div class="reveal">
-        <span class="eyebrow" style="color: var(--color-tan-dark); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;">Send us a message</span>
-        <h2 style="margin: var(--space-sm) 0 var(--space-md);">We'd love to hear from you</h2>
-        <p class="text-muted mb-lg">Typical response time: under 24 hours. For urgent issues please call.</p>
+        <span class="eyebrow" style="color: var(--color-tan-dark); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;">Test contact form</span>
+        <h2 style="margin: var(--space-sm) 0 var(--space-md);">Try the demo form workflow</h2>
+        <p class="text-muted mb-lg">This form is non-functional and must contain only fictional test data.</p>
 
         <form id="contact-form" class="card" style="padding: var(--space-xl);">
           <div class="form-group">
-            <label class="form-label" for="contact-name">Your name</label>
-            <input id="contact-name" name="name" class="form-input" type="text" placeholder="Jane Doe" required>
+            <label class="form-label" for="contact-name">Fictional test name</label>
+            <input id="contact-name" name="name" class="form-input" type="text" placeholder="Demo User" autocomplete="off" required>
           </div>
           <div class="form-group">
-            <label class="form-label" for="contact-email">Email address</label>
-            <input id="contact-email" name="email" class="form-input" type="email" placeholder="jane@email.com" required>
+            <label class="form-label" for="contact-email">Test email</label>
+            <input id="contact-email" name="email" class="form-input" type="email" placeholder="demo-user@example.test" autocomplete="off" required>
           </div>
           <div class="form-group">
             <label class="form-label" for="contact-topic">What's this about?</label>
@@ -175,19 +176,20 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label" for="contact-message">Message</label>
-            <textarea id="contact-message" name="message" class="form-textarea" placeholder="Tell us what's on your mind…" required></textarea>
+            <label class="form-label" for="contact-message">Fictional test message</label>
+            <textarea id="contact-message" name="message" class="form-textarea" placeholder="Enter dummy content only…" required></textarea>
           </div>
           <div class="form-error"></div>
-          <button type="submit" class="btn btn--primary btn--block">Send message →</button>
-          <p class="form-helper text-center mt-md">By submitting, you agree to our <a href="#">Privacy Policy</a>.</p>
+          <button type="submit" class="btn btn--primary btn--block">Test form submission →</button>
+          <p class="form-helper text-center mt-md">Nothing is sent. Never enter real personal information.</p>
         </form>
       </div>
 
       <!-- Map + branch picker column -->
       <div class="reveal" id="branches">
-        <span class="eyebrow" style="color: var(--color-tan-dark); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;">Find a branch</span>
-        <h2 style="margin: var(--space-sm) 0 var(--space-md);">247 locations and counting</h2>
+        <span class="eyebrow" style="color: var(--color-tan-dark); font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;">Sample location interface</span>
+        <h2 style="margin: var(--space-sm) 0 var(--space-md);">Fictional branches for UI testing</h2>
+        <p class="text-muted mb-md">These locations, phone numbers, and operating hours are dummy content and do not represent real Megagankybank branches.</p>
 
         <!-- Branch selector dropdown — swaps the branch card below -->
         <select id="branch-pick" class="form-select mb-md" onchange="
@@ -262,14 +264,14 @@
           <button class="accordion-header">How do I open an account?
             <span class="accordion-icon">+</span></button>
           <div class="accordion-body">
-            It takes about 5 minutes online. You'll need a government-issued ID, your SSN, and proof of address. Or walk into any branch.
+            This simulation does not open real accounts. Use only fictional test data; never submit identity documents, proof of address, or other personal information.
           </div>
         </div>
         <div class="accordion-item">
-          <button class="accordion-header">Are my deposits insured?
+          <button class="accordion-header">Does this demo accept insured deposits?
             <span class="accordion-icon">+</span></button>
           <div class="accordion-body">
-            Yes. All deposits are FDIC-insured up to $250,000 per depositor, per account category. Joint accounts get $250,000 per co-owner.
+            No. This is a fictional UI simulation and does not accept deposits or provide FDIC insurance.
           </div>
         </div>
         <div class="accordion-item">
@@ -294,10 +296,10 @@
           </div>
         </div>
         <div class="accordion-item">
-          <button class="accordion-header">What's your routing number?
+          <button class="accordion-header">Does this demo have a routing number?
             <span class="accordion-icon">+</span></button>
           <div class="accordion-body">
-            Our routing number is <strong>121000358</strong>. It's used for ACH transfers, direct deposit, and wire transfers (domestic).
+            No. Any account or routing values shown in this simulation are dummy UI data and cannot be used for transfers.
           </div>
         </div>
         <div class="accordion-item">
@@ -358,7 +360,7 @@
       <div class="footer-grid">
         <div class="footer-col footer-brand">
           <div class="nav-brand" style="color: var(--color-tan);"><span class="nav-brand-logo">M</span>Megagankybank</div>
-          <p>Banking that finally feels like home. Member FDIC. Equal Housing Lender.</p>
+          <p>Fictional banking UI for training and integration testing. No real services are provided.</p>
           <div class="footer-social mt-md">
             <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
             <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
@@ -406,7 +408,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 Ahoura's Megagankybank, N.A. All rights reserved. This is a demo site — not a real bank.</span>
+        <span>© 2026 Ahoura's Megagankybank demo. Fictional UI simulation — not a bank or financial service.</span>
         <div class="flex gap-md">
           <a href="#">Privacy</a>
           <a href="#">Terms</a>

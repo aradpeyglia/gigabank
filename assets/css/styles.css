@@ -181,12 +181,39 @@ h4 { font-size: 1.25rem; }
 
 
 /* -------------------------------------------------------------------------
-   4) HEADER & NAVIGATION
+   4) DEMO DISCLOSURE + HEADER & NAVIGATION
    The header stays sticky at the top and gains a shadow once user scrolls.
    ------------------------------------------------------------------------- */
+.demo-safety-banner {
+  position: sticky;
+  top: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 40px;
+  padding: 8px var(--space-md);
+  color: var(--color-white);
+  background: #7f1d1d;
+  border-bottom: 2px solid #fecaca;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.demo-safety-banner strong {
+  padding: 3px 8px;
+  color: #7f1d1d;
+  background: #fef2f2;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
 .site-header {
   position: sticky;            /* stays at top while scrolling             */
-  top: 0;
+  top: 40px;                   /* stack below the persistent demo warning   */
   z-index: 100;                /* float above page content                 */
   background-color: rgba(250, 246, 239, 0.95);  /* translucent off-white   */
   backdrop-filter: blur(12px); /* frosted glass effect on supported browsers*/
@@ -197,6 +224,18 @@ h4 { font-size: 1.25rem; }
 /* This class is toggled by JS once the user scrolls past the top           */
 .site-header.scrolled {
   box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 700px) {
+  .demo-safety-banner {
+    align-items: flex-start;
+    min-height: 58px;
+    font-size: 0.76rem;
+  }
+
+  .site-header {
+    top: 58px;
+  }
 }
 
 .nav {

@@ -29,7 +29,8 @@
   <script async src="https://api.glia.com/salemove_integration.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign In — Ahoura's Megagankybank</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>Demo Access — Ahoura's Megagankybank UI Simulation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -41,7 +42,7 @@
   <!-- Simplified header — just the logo and a "back to site" link -->
   <header class="site-header">
     <div class="container nav">
-      <a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank</a>
+      <a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank Demo</a>
       <div class="nav-cta">
         <a href="index.html" class="btn btn--ghost btn--sm">← Back to site</a>
         <a href="contact.html" class="btn btn--secondary btn--sm">Need help?</a>
@@ -56,17 +57,17 @@
          Hidden on screens < 960px (see CSS responsive section)
          ============================================================ -->
     <div class="login-left">
-      <h2>Welcome back to <em style="font-style: normal; color: var(--color-tan);">Megagankybank</em>.</h2>
-      <p>Your accounts are loaded and waiting — and the kettle's on.</p>
+      <h2>Explore the <em style="font-style: normal; color: var(--color-tan);">Megagankybank demo</em>.</h2>
+      <p>A fictional interface for testing authentication, dashboards, and Glia integrations.</p>
       <ul class="login-features">
-        <li>Bank-grade 256-bit encryption</li>
-        <li>FDIC insured up to $250,000</li>
-        <li>Biometric sign-in on supported devices</li>
-        <li>24/7 fraud monitoring on every account</li>
-        <li>Two-factor authentication built in</li>
+        <li>Fictional accounts and balances</li>
+        <li>No deposits or financial services</li>
+        <li>Test-only authentication workflow</li>
+        <li>Glia Direct ID integration testing</li>
+        <li>Never use real personal information</li>
       </ul>
       <p style="position: relative; z-index: 2; margin-top: var(--space-xl); font-size: 0.85rem; opacity: 0.7;">
-        — Trusted by 2.4 million customers since 2006
+        — Training simulation only; not a real financial institution
       </p>
     </div>
 
@@ -76,21 +77,28 @@
          which one is shown. JS in auth.js handles the swap.
          ============================================================ -->
     <div class="login-right">
+      <!-- This warning sits immediately beside the credential form because
+           visitors must understand that only supplied test data belongs here. -->
+      <div style="margin-bottom: var(--space-lg); padding: var(--space-md); border: 2px solid #b91c1c; border-radius: var(--radius-md); background: #fef2f2; color: #7f1d1d;">
+        <strong>Test credentials only</strong>
+        <p style="margin: 4px 0 0;">This is a fictional banking UI simulation. Never enter a real email, password, identity, or financial information.</p>
+      </div>
 
       <!-- ─────────────── SIGN IN view ─────────────── -->
       <div id="auth-view-login">
-        <h1>Sign in</h1>
-        <p class="lede">Use your Megagankybank email and password to access online banking.</p>
+        <h1>Enter the test dashboard</h1>
+        <p class="lede">Use the supplied Megagankybank demo credentials to test the authentication flow.</p>
 
-        <form id="login-form" novalidate>
+        <form id="login-form" novalidate autocomplete="off">
           <div class="form-group">
-            <label class="form-label" for="login-email">Email address</label>
-            <input id="login-email" name="email" type="email" class="form-input" placeholder="you@megagankybank.com" autocomplete="email" required>
+            <label class="form-label" for="login-email">Demo email</label>
+            <input id="login-email" name="email" type="email" class="form-input" placeholder="demo@megagankybank.com" autocomplete="off" required>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="login-password">Password</label>
-            <input id="login-password" name="password" type="password" class="form-input" placeholder="Your password" autocomplete="current-password" required>
+            <label class="form-label" for="login-password">Demo password</label>
+            <input id="login-password" name="password" type="password" class="form-input" placeholder="Use the supplied demo password" autocomplete="off" required>
+            <div class="form-helper">Do not reuse a password from any real account.</div>
           </div>
 
           <div class="flex justify-between items-center mb-md" style="font-size: 0.9rem;">
@@ -102,67 +110,67 @@
 
           <div class="form-error"></div>
 
-          <button type="submit" class="btn btn--primary btn--block btn--lg">Sign in →</button>
+          <button type="submit" class="btn btn--primary btn--block btn--lg">Enter demo dashboard →</button>
 
           <div class="login-divider">or</div>
 
           <button type="button" id="fill-demo" class="btn btn--secondary btn--block">Fill demo credentials</button>
 
           <p class="text-muted text-center mt-md" style="font-size: 0.85rem;">
-            Don't have an account?
-            <a href="#" class="auth-toggle" data-view="signup">Create one in 30 seconds →</a>
+            Need to test account creation?
+            <a href="#" class="auth-toggle" data-view="signup">Create test data →</a>
           </p>
         </form>
       </div>
 
       <!-- ─────────────── SIGN UP view (hidden by default) ─────────────── -->
       <div id="auth-view-signup" class="hidden">
-        <h1>Create your account</h1>
-        <p class="lede">It takes about 30 seconds. Your new account is created instantly in our Google Sheet.</p>
+        <h1>Create test account data</h1>
+        <p class="lede">This writes fictional test data to the project's Google Sheet. Do not submit real personal information.</p>
 
-        <form id="signup-form" novalidate>
+        <form id="signup-form" novalidate autocomplete="off">
           <div class="form-group">
-            <label class="form-label" for="signup-name">Full name</label>
-            <input id="signup-name" name="name" type="text" class="form-input" placeholder="Jane Doe" autocomplete="name" required>
+            <label class="form-label" for="signup-name">Fictional test name</label>
+            <input id="signup-name" name="name" type="text" class="form-input" placeholder="Demo User" autocomplete="off" required>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="signup-email">Email address</label>
-            <input id="signup-email" name="email" type="email" class="form-input" placeholder="jane@email.com" autocomplete="email" required>
+            <label class="form-label" for="signup-email">Test email</label>
+            <input id="signup-email" name="email" type="email" class="form-input" placeholder="demo-user@example.test" autocomplete="off" required>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="signup-password">Password</label>
-            <input id="signup-password" name="password" type="password" class="form-input" placeholder="Choose a password (min 6 chars)" autocomplete="new-password" required>
-            <div class="form-helper">Use at least 6 characters. This is a demo — don't use a real password.</div>
+            <label class="form-label" for="signup-password">Disposable test password</label>
+            <input id="signup-password" name="password" type="password" class="form-input" placeholder="Invent a demo-only password" autocomplete="off" required>
+            <div class="form-helper">Use at least 6 characters and never reuse a real password.</div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="signup-confirm">Confirm password</label>
-            <input id="signup-confirm" name="confirm" type="password" class="form-input" placeholder="Type it again" autocomplete="new-password" required>
+            <label class="form-label" for="signup-confirm">Confirm test password</label>
+            <input id="signup-confirm" name="confirm" type="password" class="form-input" placeholder="Type the demo-only password again" autocomplete="off" required>
           </div>
 
           <label class="flex items-center gap-sm mb-md" style="font-size: 0.85rem; cursor: pointer;">
             <input type="checkbox" name="terms" required>
-            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            I confirm this is fictional test data and contains no real personal information.
           </label>
 
           <div class="form-error"></div>
 
-          <button type="submit" class="btn btn--primary btn--block btn--lg">Create account →</button>
+          <button type="submit" class="btn btn--primary btn--block btn--lg">Create test account →</button>
 
           <p class="text-muted text-center mt-md" style="font-size: 0.85rem;">
-            Already have an account?
-            <a href="#" class="auth-toggle" data-view="login">Sign in instead →</a>
+            Already have demo credentials?
+            <a href="#" class="auth-toggle" data-view="login">Return to demo access →</a>
           </p>
         </form>
       </div>
 
       <!-- Demo credentials notice — only useful while in demo mode -->
       <div id="demo-notice" style="margin-top: var(--space-xl); padding: var(--space-md); background: var(--color-cream); border-radius: var(--radius-md); font-size: 0.85rem;">
-        <strong>👋 Demo mode active.</strong>
+        <strong>👋 Required demo credentials</strong>
         <p style="margin: 4px 0; color: var(--color-text-muted);">
-          Until you connect a Google Sheet, you can sign in with:
+          Use these test-only values; never enter credentials from another service:
         </p>
         <code style="display: block; padding: 8px; background: var(--color-white); border-radius: var(--radius-sm); margin-top: 6px;">
           demo@megagankybank.com · demo1234
