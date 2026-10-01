@@ -1,6 +1,6 @@
 /**
  * =========================================================================
- * AHOURA'S MEGAGANKYBANK — Google Apps Script "backend"
+ * MEGAGANKY LAB — Google Apps Script authentication adapter
  * -------------------------------------------------------------------------
  * Copy the entire contents of this file into the Apps Script editor of
  * your Google Sheet. Then deploy it as a Web App and paste the resulting
@@ -10,14 +10,13 @@
  *   • Accepts POSTs from the static site (form-urlencoded body)
  *   • Looks at the `action` parameter to decide what to do:
  *       - "login"   → check email + password against the Users sheet
- *       - "signup"  → append a new row in the Users sheet
- *       - "list"    → return all users (for debugging only — remove for prod)
+ *       - "login" → validate the supplied fictional test identity
  *   • Returns JSON. Apps Script handles CORS automatically when deployed
  *     as a Web App with "Anyone" access.
  *
  * Expected Sheet structure (tab named exactly "Users"):
  *   | A: email           | B: password | C: name         | D: accountId  | E: balance |
- *   | demo@megagankybank | demo1234    | Ahoura Radpey   | MGB-0001-DEMO | 42819.55   |
+ *   | demo@megaganky-lab.test | demo1234 | Ahoura Demo | LAB-0001 | 0 |
  *
  * SECURITY NOTE: Passwords are stored in plain text in a Google Sheet.
  * This is FINE for a personal demo or a closed test, but NEVER for real
@@ -47,12 +46,6 @@ function doPost(e) {
       case 'login':
         response = handleLogin(e.parameter.email, e.parameter.password);
         break;
-      case 'signup':
-        response = handleSignup(e.parameter);
-        break;
-      case 'list':
-        response = handleList();
-        break;
       default:
         response = { ok: false, error: 'Unknown action: ' + action };
     }
@@ -68,11 +61,11 @@ function doPost(e) {
 
 /* =========================================================================
  * doGet — optional, gives you a friendly health-check page in a browser.
- * Visit your Web App URL directly to see "Megagankybank API is live".
+ * Visit the Web App URL directly to run a simple health check.
  * ========================================================================= */
 function doGet() {
   return ContentService
-    .createTextOutput("Ahoura's Megagankybank API is live. POST to this endpoint to authenticate.")
+    .createTextOutput("Megaganky Lab authentication adapter is live.")
     .setMimeType(ContentService.MimeType.TEXT);
 }
 
@@ -114,63 +107,6 @@ function handleLogin(email, password) {
   }
 
   return { ok: false, error: 'Invalid email or password.' };
-}
-
-
-/* =========================================================================
- * handleSignup — append a new user row.
- * Auto-generates an accountId and seeds balance to 0 if not provided.
- * Returns { ok: true, user: {...} } on success.
- * ========================================================================= */
-function handleSignup(params) {
-  const { email, password, name } = params;
-  if (!email || !password || !name) {
-    return { ok: false, error: 'Name, email, and password are required.' };
-  }
-
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(USERS_SHEET_NAME);
-  if (!sheet) {
-    return { ok: false, error: 'Users sheet not found.' };
-  }
-
-  // Check for existing email so we don't create duplicates
-  const data = sheet.getDataRange().getValues();
-  for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0] || '').trim().toLowerCase() === email.trim().toLowerCase()) {
-      return { ok: false, error: 'An account with that email already exists.' };
-    }
-  }
-
-  // Auto-generate a friendly account ID, e.g. MGB-0023
-  const newId = 'MGB-' + String(data.length).padStart(4, '0');
-
-  // Append the row in the order matching our column layout
-  sheet.appendRow([email, password, name, newId, 0]);
-
-  return {
-    ok: true,
-    user: { name, email, accountId: newId, balance: 0 }
-  };
-}
-
-
-/* =========================================================================
- * handleList — return all users (REMOVE OR PROTECT BEFORE GOING LIVE).
- * Useful only for debugging your sheet from the browser.
- * ========================================================================= */
-function handleList() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(USERS_SHEET_NAME);
-  if (!sheet) return { ok: false, error: 'Users sheet not found.' };
-
-  const rows = sheet.getDataRange().getValues();
-  // Drop password column for safety
-  const users = rows.slice(1).map(r => ({
-    email:     r[0],
-    name:      r[2],
-    accountId: r[3],
-    balance:   r[4],
-  }));
-  return { ok: true, count: users.length, users };
 }
 
 

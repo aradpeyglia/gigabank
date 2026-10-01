@@ -1,11 +1,10 @@
 /* =========================================================================
    sheets.js — thin wrapper around the existing Google Apps Script API
    -------------------------------------------------------------------------
-   We're keeping the existing Apps Script as the "user database" since it
-   already has login + signup logic backed by the Google Sheet. This Worker
-   acts as a man-in-the-middle that:
-     1) Receives login/signup from the browser
-     2) Calls the Apps Script to validate / create the user
+   The existing Apps Script validates the lab's single test identity
+   against a private Google Sheet. This Worker:
+     1) Receives login requests from the browser
+     2) Calls the Apps Script to validate the fictional test identity
      3) On success, mints a JWT and returns it (that part is in jwt.js)
 
    The Apps Script accepts form-urlencoded POSTs and returns JSON like:
@@ -20,7 +19,7 @@
  *
  * @param {string} sheetsUrl  The Apps Script Web App URL (stored as the
  *                            SHEETS_API_URL Worker secret).
- * @param {string} action     'login' or 'signup'.
+ * @param {string} action     The adapter action; currently only 'login'.
  * @param {object} params     Extra fields the Apps Script needs.
  */
 export async function callSheetsAction(sheetsUrl, action, params) {

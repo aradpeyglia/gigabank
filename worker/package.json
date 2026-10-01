@@ -1,8 +1,8 @@
 {
-  "name": "gigabank-worker",
+  "name": "megaganky-lab-auth-worker",
   "version": "0.1.0",
   "private": true,
-  "description": "Cloudflare Worker that signs Glia Direct ID (ES256) JWTs for the Gigabank demo site.",
+  "description": "Cloudflare Worker that signs test-only Glia Direct ID tokens for Megaganky Lab.",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
@@ -13,6 +13,6 @@
     "secret:put-sheets-url": "wrangler secret put SHEETS_API_URL"
   },
   "devDependencies": {
-    "wrangler": "^3.78.0"
+    "wrangler": "^4.146.0"
   }
 }

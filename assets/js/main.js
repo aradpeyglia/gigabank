@@ -1,5 +1,5 @@
 /* =========================================================================
-   AHOURA'S MEGAGANKYBANK — main.js
+   MEGAGANKY LAB — main.js
    -------------------------------------------------------------------------
    Shared client-side behavior used on every page:
      • Sticky-header shadow on scroll
@@ -47,10 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
 /* =========================================================================
    PERMANENT DEMO / SIMULATION DISCLOSURE
    -------------------------------------------------------------------------
-   This site intentionally resembles a banking interface for UI and Glia
-   integration testing. A persistent, non-dismissible banner makes that
-   purpose unambiguous on every page and warns visitors not to submit real
-   credentials, personal information, or financial information.
+   This fictional product lab exists for UI and Glia integration testing.
+   A persistent, non-dismissible banner makes that purpose unambiguous on
+   every page and warns visitors not to submit real credentials or private
+   information.
 
    main.js is loaded by every public page and the dashboard, so injecting
    the banner here keeps the disclosure consistent without duplicating the
@@ -65,8 +65,8 @@ function initDemoSafetyBanner() {
   banner.setAttribute('role', 'note');
   banner.setAttribute('aria-label', 'Demo site warning');
   banner.innerHTML = `
-    <strong>DEMO / TRAINING SIMULATION</strong>
-    <span>No real banking services are provided. Never enter real passwords, personal data, or financial information.</span>
+    <strong>DEMO / TRAINING SANDBOX</strong>
+    <span>Fictional UI testing environment. Never enter real passwords, personal data, or confidential information.</span>
   `;
 
   // Place the disclosure before all page content, including the navbar.
@@ -76,7 +76,7 @@ function initDemoSafetyBanner() {
 
 /* =========================================================================
    AUTH NAV: when a user is signed in (session in localStorage via auth.js),
-   swap the default "Sign in / Open Account" header buttons for a personal
+   swap the default demo-login actions for a personal
    greeting + sign-out. Auth.js exposes window.MGBAuth.
    ========================================================================= */
 function initAuthNav() {
@@ -109,7 +109,7 @@ function initAuthNav() {
                    background: linear-gradient(135deg, var(--color-tan), var(--color-brown));
                    color:#fff; display:inline-grid; place-items:center;
                    font-weight:700; font-size:0.72rem;">${initial}</span>
-      Hi, ${firstName}
+      Demo: ${firstName}
     </a>
     <button type="button" id="nav-signout" class="btn btn--secondary btn--sm">Sign out</button>
   `;

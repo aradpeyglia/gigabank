@@ -1,5 +1,5 @@
 /* =========================================================================
-   AHOURA'S MEGAGANKYBANK — Shared Stylesheet
+   MEGAGANKY LAB — Shared Stylesheet
    -------------------------------------------------------------------------
    This single stylesheet powers every page of the site. It is organized
    top-to-bottom in roughly the order styles "cascade" — variables first,
@@ -40,7 +40,7 @@
   --space-xl:  40px;
   --space-2xl: 64px;
 
-  /* Border radius scale — banks like soft, friendly corners                */
+  /* Border radius scale — soft corners keep the sandbox visually friendly  */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 16px;

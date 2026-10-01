@@ -1,12 +1,12 @@
 # =========================================================================
-# wrangler.toml — Cloudflare Worker config for the Gigabank API
+# wrangler.toml — Cloudflare Worker config for Megaganky Lab authentication
 # -------------------------------------------------------------------------
 # Run `wrangler deploy` from THIS DIRECTORY (worker/), not from the project
 # root. Wrangler uses this file to know what to build and where to put it.
 # =========================================================================
 
-# Public name of the Worker. Cloudflare will publish to
-#   https://gigabank-api.<your-cf-subdomain>.workers.dev
+# This legacy deployment name is retained because its encrypted secrets and
+# frontend integration are already configured in Cloudflare.
 name = "gigabank-api"
 
 # Entry file. Wrangler will bundle this + its imports into a single script.
