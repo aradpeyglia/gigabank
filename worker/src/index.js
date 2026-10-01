@@ -1,5 +1,5 @@
 /* =========================================================================
-   index.js — Megaganky Lab authentication Worker entry point
+   index.js — Gigabank API Worker entry point
    -------------------------------------------------------------------------
    Routes requests to per-endpoint handlers. The shape of this file is the
    "Module Worker" format Cloudflare prefers:
@@ -13,6 +13,7 @@
    Endpoints:
      GET  /health   → liveness ping (no auth)
      POST /login    → { email, password } → { ok, user, idToken, expiresAt }
+     POST /signup   → { name, email, password } → same as /login
      POST /refresh  → { idToken } → { ok, idToken, expiresAt }
      POST /logout   → no-op success (placeholder for future cookie clear)
    ========================================================================= */
@@ -125,6 +126,24 @@ async function handleLogin(request, env) {
 }
 
 
+/** POST /signup — create a new user in the Sheet, auto-login on success. */
+async function handleSignup(request, env) {
+  const { name, email, password } = await request.json();
+  if (!name || !email || !password) {
+    return json({ ok: false, error: 'Name, email, and password are required.' }, 400, request);
+  }
+
+  const result = await callSheetsAction(env.SHEETS_API_URL, 'signup', { name, email, password });
+  if (!result.ok) {
+    // 400 because duplicate-email is the typical failure (user error)
+    return json(result, 400, request);
+  }
+
+  const { idToken, expiresAt } = await mintToken(result.user, env);
+  return json({ ok: true, user: result.user, idToken, expiresAt }, 200, request);
+}
+
+
 /**
  * POST /refresh — given a still-valid JWT, verify it and issue a fresh one
  * with the same identity claims and a new 5-min lifetime.
@@ -171,7 +190,7 @@ export default {
       switch (url.pathname) {
         case '/health':
           return json(
-            { ok: true, service: 'megaganky-lab-auth', message: 'alive 🎉' },
+            { ok: true, service: 'gigabank-api', message: 'alive 🎉' },
             200,
             request
           );
@@ -179,6 +198,10 @@ export default {
         case '/login':
           if (request.method !== 'POST') return methodNotAllowed(request);
           return await handleLogin(request, env);
+
+        case '/signup':
+          if (request.method !== 'POST') return methodNotAllowed(request);
+          return await handleSignup(request, env);
 
         case '/refresh':
           if (request.method !== 'POST') return methodNotAllowed(request);

@@ -1,5 +1,5 @@
 /* =========================================================================
-   MEGAGANKY LAB — contact.js
+   AHOURA'S MEGAGANKYBANK — contact.js
    -------------------------------------------------------------------------
    Validates and "submits" the contact form on contact.html.
    Pure demo — no real network call is made; we just show a toast.

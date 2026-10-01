@@ -1,9 +1,21 @@
 <!DOCTYPE html>
-<!-- Test-only login retained for Cloudflare, Sheets, and Glia Direct ID validation. -->
+<!--
+  login.html — Online Banking Sign In
+  ---------------------------------------------------------------
+  Two-column layout:
+    • Left: brand panel with bullet features (hidden on mobile)
+    • Right: actual sign-in form which posts to Google Sheets via
+      Apps Script (or falls back to demo creds — see auth.js).
+  After successful sign-in user is redirected to dashboard.html.
+-->
 <html lang="en">
 <head>
   <script>
-    // Expose only the short-lived Direct ID token to Glia.
+    // Define getGliaContext synchronously so the async Glia script can
+    // read the visitor's Direct ID token on its very first poll — even
+    // before /assets/js/auth.js has parsed at the bottom of <body>. We
+    // read the token straight from localStorage (key set by auth.js'
+    // saveIdToken()). Returns {} for anonymous visitors.
     window.getGliaContext = function () {
       try {
         var stored = JSON.parse(localStorage.getItem('mgb_id_token') || 'null');
@@ -18,8 +30,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <title>Demo Login — Megaganky Lab</title>
-  <meta name="description" content="Test-only authentication entry for the fictional Megaganky Lab sandbox.">
+  <title>Demo Access — Ahoura's Megagankybank UI Simulation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -27,37 +38,148 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%238B6B43'/%3E%3Ctext x='50' y='62' text-anchor='middle' fill='white' font-family='serif' font-size='40' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
 </head>
 <body>
-  <!-- Simplified header avoids presenting the test form as a production portal. -->
-  <header class="site-header"><div class="container nav"><a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megaganky Lab</a><div class="nav-cta"><a href="index.html" class="btn btn--ghost btn--sm">← Back to sandbox</a><a href="contact.html" class="btn btn--secondary btn--sm">Testing help</a></div></div></header>
+
+  <!-- Simplified header — just the logo and a "back to site" link -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="index.html" class="nav-brand"><span class="nav-brand-logo">M</span>Megagankybank Demo</a>
+      <div class="nav-cta">
+        <a href="index.html" class="btn btn--ghost btn--sm">← Back to site</a>
+        <a href="contact.html" class="btn btn--secondary btn--sm">Need help?</a>
+      </div>
+    </div>
+  </header>
 
   <div class="login-page">
-    <!-- Explanatory panel clearly establishes the fictional context. -->
+
+    <!-- ============================================================
+         LEFT — Brand panel with feature checklist
+         Hidden on screens < 960px (see CSS responsive section)
+         ============================================================ -->
     <div class="login-left">
-      <h2>Authentication <em style="font-style:normal;color:var(--color-tan);">playground</em>.</h2>
-      <p>Use the supplied identity to test sessions and Glia Direct ID.</p>
-      <ul class="login-features"><li>Fictional user profile</li><li>Cloudflare Worker validation</li><li>Short-lived test identity token</li><li>Glia identification workflow</li><li>No production or customer access</li></ul>
-      <p style="position:relative;z-index:2;margin-top:var(--space-xl);font-size:0.85rem;opacity:0.8;">Never enter credentials from a real service.</p>
+      <h2>Explore the <em style="font-style: normal; color: var(--color-tan);">Megagankybank demo</em>.</h2>
+      <p>A fictional interface for testing authentication, dashboards, and Glia integrations.</p>
+      <ul class="login-features">
+        <li>Fictional accounts and balances</li>
+        <li>No deposits or financial services</li>
+        <li>Test-only authentication workflow</li>
+        <li>Glia Direct ID integration testing</li>
+        <li>Never use real personal information</li>
+      </ul>
+      <p style="position: relative; z-index: 2; margin-top: var(--space-xl); font-size: 0.85rem; opacity: 0.7;">
+        — Training simulation only; not a real financial institution
+      </p>
     </div>
 
+    <!-- ============================================================
+         RIGHT — Two stacked forms: login (default visible) and
+         signup (hidden by default). The "auth-toggle" links flip
+         which one is shown. JS in auth.js handles the swap.
+         ============================================================ -->
     <div class="login-right">
-      <!-- This warning remains directly adjacent to all credential controls. -->
-      <div style="margin-bottom:var(--space-lg);padding:var(--space-md);border:2px solid #b91c1c;border-radius:var(--radius-md);background:#fef2f2;color:#7f1d1d;"><strong>TEST CREDENTIALS ONLY</strong><p style="margin:4px 0 0;">Use only the values supplied below. Never enter a real email or password.</p></div>
+      <!-- This warning sits immediately beside the credential form because
+           visitors must understand that only supplied test data belongs here. -->
+      <div style="margin-bottom: var(--space-lg); padding: var(--space-md); border: 2px solid #b91c1c; border-radius: var(--radius-md); background: #fef2f2; color: #7f1d1d;">
+        <strong>Test credentials only</strong>
+        <p style="margin: 4px 0 0;">This is a fictional banking UI simulation. Never enter a real email, password, identity, or financial information.</p>
+      </div>
+
+      <!-- ─────────────── SIGN IN view ─────────────── -->
       <div id="auth-view-login">
-        <h1>Open demo workspace</h1>
-        <p class="lede">Exercise the existing login, token, and session flow with the fictional demo identity.</p>
+        <h1>Enter the test dashboard</h1>
+        <p class="lede">Use the supplied Megagankybank demo credentials to test the authentication flow.</p>
+
         <form id="login-form" novalidate autocomplete="off">
-          <div class="form-group"><label class="form-label" for="login-email">Demo email</label><input id="login-email" name="email" type="email" class="form-input" placeholder="demo@megaganky-lab.test" autocomplete="off" required></div>
-          <div class="form-group"><label class="form-label" for="login-password">Demo password</label><input id="login-password" name="password" type="password" class="form-input" placeholder="Use the supplied demo password" autocomplete="off" required><div class="form-helper">Never reuse a password from another website.</div></div>
+          <div class="form-group">
+            <label class="form-label" for="login-email">Demo email</label>
+            <input id="login-email" name="email" type="email" class="form-input" placeholder="demo@megagankybank.com" autocomplete="off" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-password">Demo password</label>
+            <input id="login-password" name="password" type="password" class="form-input" placeholder="Use the supplied demo password" autocomplete="off" required>
+            <div class="form-helper">Do not reuse a password from any real account.</div>
+          </div>
+
+          <div class="flex justify-between items-center mb-md" style="font-size: 0.9rem;">
+            <label class="flex items-center gap-sm" style="cursor: pointer;">
+              <input type="checkbox" name="remember"> Remember me
+            </label>
+            <a href="#" onclick="event.preventDefault(); window.toast('Password reset emailed to you (demo).','')">Forgot password?</a>
+          </div>
+
           <div class="form-error"></div>
-          <button type="submit" class="btn btn--primary btn--block btn--lg">Enter demo workspace →</button>
+
+          <button type="submit" class="btn btn--primary btn--block btn--lg">Enter demo dashboard →</button>
+
           <div class="login-divider">or</div>
-          <button type="button" id="fill-demo" class="btn btn--secondary btn--block">Fill supplied test credentials</button>
+
+          <button type="button" id="fill-demo" class="btn btn--secondary btn--block">Fill demo credentials</button>
+
+          <p class="text-muted text-center mt-md" style="font-size: 0.85rem;">
+            Need to test account creation?
+            <a href="#" class="auth-toggle" data-view="signup">Create test data →</a>
+          </p>
         </form>
       </div>
-      <div id="demo-notice" style="margin-top:var(--space-xl);padding:var(--space-md);background:var(--color-cream);border-radius:var(--radius-md);font-size:0.85rem;"><strong>Required fictional identity</strong><code style="display:block;padding:8px;background:var(--color-white);border-radius:var(--radius-sm);margin-top:6px;">demo@megaganky-lab.test · demo1234</code></div>
+
+      <!-- ─────────────── SIGN UP view (hidden by default) ─────────────── -->
+      <div id="auth-view-signup" class="hidden">
+        <h1>Create test account data</h1>
+        <p class="lede">This writes fictional test data to the project's Google Sheet. Do not submit real personal information.</p>
+
+        <form id="signup-form" novalidate autocomplete="off">
+          <div class="form-group">
+            <label class="form-label" for="signup-name">Fictional test name</label>
+            <input id="signup-name" name="name" type="text" class="form-input" placeholder="Demo User" autocomplete="off" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signup-email">Test email</label>
+            <input id="signup-email" name="email" type="email" class="form-input" placeholder="demo-user@example.test" autocomplete="off" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signup-password">Disposable test password</label>
+            <input id="signup-password" name="password" type="password" class="form-input" placeholder="Invent a demo-only password" autocomplete="off" required>
+            <div class="form-helper">Use at least 6 characters and never reuse a real password.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signup-confirm">Confirm test password</label>
+            <input id="signup-confirm" name="confirm" type="password" class="form-input" placeholder="Type the demo-only password again" autocomplete="off" required>
+          </div>
+
+          <label class="flex items-center gap-sm mb-md" style="font-size: 0.85rem; cursor: pointer;">
+            <input type="checkbox" name="terms" required>
+            I confirm this is fictional test data and contains no real personal information.
+          </label>
+
+          <div class="form-error"></div>
+
+          <button type="submit" class="btn btn--primary btn--block btn--lg">Create test account →</button>
+
+          <p class="text-muted text-center mt-md" style="font-size: 0.85rem;">
+            Already have demo credentials?
+            <a href="#" class="auth-toggle" data-view="login">Return to demo access →</a>
+          </p>
+        </form>
+      </div>
+
+      <!-- Demo credentials notice — only useful while in demo mode -->
+      <div id="demo-notice" style="margin-top: var(--space-xl); padding: var(--space-md); background: var(--color-cream); border-radius: var(--radius-md); font-size: 0.85rem;">
+        <strong>👋 Required demo credentials</strong>
+        <p style="margin: 4px 0; color: var(--color-text-muted);">
+          Use these test-only values; never enter credentials from another service:
+        </p>
+        <code style="display: block; padding: 8px; background: var(--color-white); border-radius: var(--radius-sm); margin-top: 6px;">
+          demo@megagankybank.com · demo1234
+        </code>
+      </div>
     </div>
   </div>
-  <script src="assets/js/auth.js"></script>
+
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/auth.js"></script>
 </body>
 </html>
